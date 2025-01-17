@@ -1,0 +1,25 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "The classic game Battleship, made as part of The Odin Project",
+  "keywords": [
+    "battleship",
+    "the-odin-project",
+    "game"
+  ],
+  "homepage": "https://github.com/McKathlin/battleship#readme",
+  "bugs": {
+    "url": "https://github.com/McKathlin/battleship/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/McKathlin/battleship.git"
+  },
+  "license": "ISC",
+  "author": "McKathlin",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  }
+}
