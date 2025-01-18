@@ -1,4 +1,7 @@
-import { GameBoard } from '../src/battleship.js';
+import { GameBoard, Ship } from '../src/battleship.js';
+
+const STANDARD_WIDTH = 10;
+const STANDARD_HEIGHT = 10;
 
 test('remembers width and height', () => {
   let WIDTH = 8;
@@ -8,8 +11,18 @@ test('remembers width and height', () => {
   expect(board.height).toBe(HEIGHT);
 });
 
-test('remembers position of placed ship', () => {
-  // TODO
+test('places horizontally', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let cruiser = new Ship(3);
+  board.placeHorizontal(cruiser, 1, 1);
+  expect(board.hasShipAt(3, 1)).toBe(true);
+});
+
+test('places vertically', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let cruiser = new Ship(3);
+  board.placeVertical(cruiser, 1, 1);
+  expect(board.hasShipAt(1, 3)).toBe(true);
 });
 
 test('disallows ship collisions', () => {
