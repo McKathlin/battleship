@@ -12,6 +12,10 @@ class Ship {
     return this._hitCount;
   }
 
+  hit() {
+    this._hitCount += 1;
+  }
+
   isSunk() {
     return this._hitCount >= this._length;
   }
