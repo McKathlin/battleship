@@ -1,7 +1,7 @@
 import { Ship } from '../src/battleship.js';
 
 test('remembers its length (3)', () => {
-  let LENGTH = 3;
+  const LENGTH = 3;
   let s = new Ship(LENGTH);
   expect(s.length).toBe(LENGTH);
 });
@@ -20,4 +20,14 @@ test('can take a hit without sinking if length > 1', () => {
   let aShip = new Ship(2);
   aShip.hit();
   expect(aShip.isSunk()).toBe(false);
+});
+
+test('sinks after hit count equal to length', () => {
+  const LENGTH = 4;
+  let longShip = new Ship(LENGTH);
+  for (let i = 0; i < LENGTH; i++) {
+    expect(longShip.isSunk()).toBe(false);
+    longShip.hit();
+  }
+  expect(longShip.isSunk()).toBe(true);
 });
