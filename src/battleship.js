@@ -1,3 +1,4 @@
+
 class Ship {
   constructor(length) {
     this._length = length;
@@ -21,4 +22,21 @@ class Ship {
   }
 }
 
-export { Ship };
+class GameBoard {
+  constructor(w, h) {
+    this._width = w;
+    this._height = h;
+    this._grid = new Array(w * h);
+    this._ships = [];
+  }
+
+  get width() {
+    return this._width;
+  }
+
+  get height() {
+    return this._height;
+  }
+}
+
+export { Ship, GameBoard };
