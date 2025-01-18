@@ -10,6 +10,13 @@ test('remembers its length (4)', () => {
   expect(new Ship(4).length).toBe(4);
 });
 
+test('remembers hitCount', () => {
+  let myShip = new Ship(3);
+  myShip.hit();
+  myShip.hit();
+  expect(myShip.hitCount).toBe(2);
+});
+
 test('sinks after 1 hit if length is 1', () => {
   let tinyShip = new Ship(1);
   tinyShip.hit();
