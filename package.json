@@ -15,11 +15,17 @@
     "type": "git",
     "url": "git+https://github.com/McKathlin/battleship.git"
   },
+  "jest": {
+    "transform": {}
+  },
   "license": "ISC",
   "author": "McKathlin",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
