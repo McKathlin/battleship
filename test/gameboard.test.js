@@ -82,8 +82,24 @@ test('disallows placing ship vertically out of bounds', () => {
   expect(() => { board.placeVertical(carrier, 1, -1); }).toThrow();
 });
 
+test('allows placing two adjacent ships', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let carrier = new Ship(5);
+  let destroyer = new Ship(2);
+
+  board.placeHorizontal(carrier, 1, 1);
+  expect(board.canPlaceVertical(destroyer, 2, 2)).toBe(true);
+  expect(() => board.placeVertical(destroyer, 2, 2)).not.toThrow();
+});
+
 test('disallows ship collisions', () => {
-  // TODO
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let carrier = new Ship(5);
+  let destroyer = new Ship(2);
+
+  board.placeHorizontal(carrier, 1, 1);
+  expect(board.canPlaceVertical(destroyer, 2, 0)).toBe(false);
+  expect(() => board.placeVertical(destroyer, 2, 0)).toThrow();
 });
 
 test('returns hit ship', () => {
