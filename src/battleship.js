@@ -163,4 +163,53 @@ class GameBoard {
   }
 }
 
-export { Ship, GameBoard };
+const STANDARD_BOARD_WIDTH = 10;
+const STANDARD_BOARD_HEIGHT = 10;
+
+class Player {
+  constructor({
+    placementAI = null,
+    attackAI = null,
+    boardWidth = STANDARD_BOARD_WIDTH,
+    boardHeight = STANDARD_BOARD_HEIGHT,
+    opponent = null,
+  }) {
+    this._board = new GameBoard(boardWidth, boardHeight);
+    this._opponent = opponent;
+    if (opponent) {
+      opponent._opponent = this;
+    }
+  }
+
+  get opponent() {
+    return this._opponent;
+  }
+
+  get board() {
+    return this._board;
+  }
+
+  isComputer() {
+    return !!this._attackAI;
+  }
+
+  isHuman() {
+    return !this.isComputer();
+  }
+
+  canAttack(x, y) {
+    if (!this.opponent) {
+      return false;
+    }
+    return this.opponent.board.canBeAttacked(x, y);
+  }
+
+  attack(x, y) {
+    if (!this.canAttack(x, y)) {
+      throw new Error(`Player can't attack ${x},${y}`);
+    }
+    return this.opponent.board.receiveAttack(x, y);
+  }
+}
+
+export { Ship, GameBoard, Player };
