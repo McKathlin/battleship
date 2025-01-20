@@ -65,10 +65,10 @@ test('disallows placing ship horizontally out of bounds', () => {
   let carrier = new Ship(5);
 
   expect(board.canPlaceHorizontal(carrier, STANDARD_WIDTH - 4, 1)).toBe(false);
-  expect(board.placeHorizontal(carrier, STANDARD_WIDTH - 4, 1)).toThrow();
+  expect(() => { board.placeHorizontal(carrier, STANDARD_WIDTH - 4, 1); }).toThrow();
 
   expect(board.canPlaceHorizontal(carrier, 1, -1)).toBe(false);
-  expect(board.placeHorizontal(carrier, 1, -1)).toThrow();
+  expect(() => { board.placeHorizontal(carrier, 1, -1); }).toThrow();
 });
 
 test('disallows placing ship vertically out of bounds', () => {
@@ -76,10 +76,10 @@ test('disallows placing ship vertically out of bounds', () => {
   let carrier = new Ship(5);
   
   expect(board.canPlaceVertical(carrier, 2, STANDARD_HEIGHT - 4)).toBe(false);
-  expect(board.placeVertical(carrier, 2, STANDARD_HEIGHT - 4)).toThrow();
+  expect(() => { board.placeVertical(carrier, 2, STANDARD_HEIGHT - 4); }).toThrow();
 
   expect(board.canPlaceVertical(carrier, 1, -1)).toBe(false);
-  expect(board.placeVertical(carrier, 1, -1)).toThrow();
+  expect(() => { board.placeVertical(carrier, 1, -1); }).toThrow();
 });
 
 test('disallows ship collisions', () => {
