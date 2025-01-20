@@ -55,18 +55,58 @@ class GameBoard {
   }
 
   canPlaceHorizontal(ship, x, y) {
-    return true; // TODO
+    // Check bounds on either end
+    if (!this.isInBounds(x, y)) {
+      return false;
+    }
+    if (!this.isInBounds(x + ship.length - 1, y)) {
+      return false;
+    }
+
+    // Check availability on every cell
+    for (let i = 0; i < ship.length; i++) {
+      if (this.hasShipAt(x + i, y)) {
+        return false;
+      }
+    }
+
+    // All clear!
+    return true;
   }
 
   canPlaceVertical(ship, x, y) {
-    return true; // TODO
-  }
+    // Check bounds on either end
+    if (!this.isInBounds(x, y)) {
+      return false;
+    }
+    if (!this.isInBounds(x, y + ship.length - 1)) {
+      return false;
+    }
 
-  placeVertical(ship, x, y) {
-    // TODO
+    // Check availability on every cell
+    for (let i = 0; i < ship.length; i++) {
+      if (this.hasShipAt(x, y + i)) {
+        return false;
+      }
+    }
+
+    // All clear!
+    return true;
   }
 
   placeHorizontal(ship, x, y) {
+    if (!this.canPlaceHorizontal(ship, x, y)) {
+      throw new Error(`No room for horizontal placement at ${x},${y}`);
+    }
+
+    // TODO
+  }
+
+  placeVertical(ship, x, y) {
+    if (!this.canPlaceVertical(ship, x, y)) {
+      throw new Error(`No room for vertical placement at ${x},${y}`);
+    }
+
     // TODO
   }
 }
