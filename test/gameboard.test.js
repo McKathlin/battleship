@@ -46,7 +46,7 @@ test('places horizontally', () => {
   expect(board.canPlaceHorizontal(cruiser, 1, 1)).toBe(true);
   board.placeHorizontal(cruiser, 1, 1);
   expect(board.hasShipAt(3, 1)).toBe(true);
-  expect(board.shipAt(3, 1)).toEqual(cruiser);
+  expect(board.shipAt(3, 1)).toStrictEqual(cruiser);
   expect(board.hasShipAt(1, 3)).toBe(false);
 });
 
@@ -56,7 +56,7 @@ test('places vertically', () => {
   expect(board.canPlaceVertical(cruiser, 1, 1)).toBe(true);
   board.placeVertical(cruiser, 1, 1);
   expect(board.hasShipAt(1, 3)).toBe(true);
-  expect(board.shipAt(1, 3)).toEqual(cruiser);
+  expect(board.shipAt(1, 3)).toStrictEqual(cruiser);
   expect(board.hasShipAt(3, 1)).toBe(false);
 });
 

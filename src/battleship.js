@@ -26,7 +26,7 @@ class GameBoard {
   constructor(w, h) {
     this._width = w;
     this._height = h;
-    this._grid = new Array(w * h);
+    this._shipGrid = new Array(w * h);
     this._ships = [];
   }
 
@@ -42,8 +42,8 @@ class GameBoard {
     if (!this.isInBounds(x, y)) {
       return null;
     }
-    let index = (y * this.height) + x;
-    return this._grid[index] ?? null;
+    let index = this._indexAt(x, y);
+    return this._shipGrid[index] ?? null;
   }
 
   isInBounds(x, y) {
@@ -99,7 +99,11 @@ class GameBoard {
       throw new Error(`No room for horizontal placement at ${x},${y}`);
     }
 
-    // TODO
+    for (let i = 0; i < ship.length; i++) {
+      let index = this._indexAt(x + i, y);
+      this._shipGrid[index] = ship;
+    }
+    this._ships.push(ship);
   }
 
   placeVertical(ship, x, y) {
@@ -107,7 +111,17 @@ class GameBoard {
       throw new Error(`No room for vertical placement at ${x},${y}`);
     }
 
-    // TODO
+    for (let i = 0; i < ship.length; i++) {
+      let index = this._indexAt(x, y + i);
+      this._shipGrid[index] = ship;
+    }
+    this._ships.push(ship);
+  }
+
+  //-- Private helper methods --//
+
+  _indexAt(x, y) {
+    return (y * this.height) + x;
   }
 }
 
