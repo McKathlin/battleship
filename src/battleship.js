@@ -38,8 +38,36 @@ class GameBoard {
     return this._height;
   }
 
+  shipAt(x, y) {
+    if (!this.isInBounds(x, y)) {
+      return null;
+    }
+    let index = (y * this.height) + x;
+    return this._grid[index] ?? null;
+  }
+
   isInBounds(x, y) {
-    return x >= 0 && x < this._width && y >= 0 && y < this._height;
+    return x >= 0 && x < this.width && y >= 0 && y < this.height;
+  }
+
+  hasShipAt(x, y) {
+    return !!this.shipAt(x, y);
+  }
+
+  canPlaceHorizontal(ship, x, y) {
+    return true; // TODO
+  }
+
+  canPlaceVertical(ship, x, y) {
+    return true; // TODO
+  }
+
+  placeVertical(ship, x, y) {
+    // TODO
+  }
+
+  placeHorizontal(ship, x, y) {
+    // TODO
   }
 }
 
