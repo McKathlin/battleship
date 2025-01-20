@@ -102,12 +102,59 @@ test('disallows ship collisions', () => {
   expect(() => board.placeVertical(destroyer, 2, 0)).toThrow();
 });
 
+test('remembers attack coords', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+
+  const X = 1;
+  const Y = 2;
+  expect(board.hasBeenAttacked(X, Y)).toBe(false);
+  expect(board.canBeAttacked(X, Y)).toBe(true);
+
+  board.receiveAttack(X, Y);
+  expect(board.hasBeenAttacked(X, Y)).toBe(true);
+  expect(board.canBeAttacked(X, Y)).toBe(false);
+});
+
 test('returns hit ship', () => {
-  // TODO
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let otherShip = new Ship(3);
+  let targetShip = new Ship(3);
+  board.placeHorizontal(otherShip, 0, 0);
+  board.placeVertical(targetShip, 1, 1);
+
+  let attackInfo = board.receiveAttack(1, 3);
+  expect(attackInfo.hitShip).toStrictEqual(targetShip);
+  expect(targetShip.hitCount).toBe(1);
 });
 
 test('returns missed coordinates', () => {
-  // TODO
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let aShip = new Ship(3);
+
+  board.placeHorizontal(aShip, 4, 2);
+
+  const ATTACK_X = 4;
+  const ATTACK_Y = 3;
+  let attackInfo = board.receiveAttack(ATTACK_X, ATTACK_Y);
+  expect(attackInfo.hitShip).toBe(null);
+  expect(attackInfo.x).toBe(ATTACK_X);
+  expect(attackInfo.y).toBe(ATTACK_Y);
+});
+
+test('disallows attacking same coordinates twice', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let otherShip = new Ship(3);
+  let targetShip = new Ship(3);
+  board.placeHorizontal(targetShip, 1, 2);
+
+  const HIT_X = 3;
+  const HIT_Y = 2;
+  let attackInfo = board.receiveAttack(HIT_X, HIT_Y);
+  expect(attackInfo.hitShip).toStrictEqual(targetShip);
+  expect(targetShip.hitCount).toBe(1);
+
+  expect(board.canBeAttacked(HIT_X, HIT_Y)).toBe(false);
+  expect(() => board.receiveAttack(HIT_X, HIT_Y)).toThrow();
 });
 
 test('remembers placed ships', () => {
