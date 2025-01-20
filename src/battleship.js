@@ -26,8 +26,9 @@ class GameBoard {
   constructor(w, h) {
     this._width = w;
     this._height = h;
-    this._shipGrid = new Array(w * h);
     this._ships = [];
+    this._shipGrid = new Array(w * h);
+    this._attackGrid = new Array(w * h);
   }
 
   get width() {
@@ -38,16 +39,17 @@ class GameBoard {
     return this._height;
   }
 
+  isInBounds(x, y) {
+    return x >= 0 && x < this.width && y >= 0 && y < this.height;
+  }
+
+  //-- Ship placement --
+
   shipAt(x, y) {
     if (!this.isInBounds(x, y)) {
       return null;
     }
-    let index = this._indexAt(x, y);
-    return this._shipGrid[index] ?? null;
-  }
-
-  isInBounds(x, y) {
-    return x >= 0 && x < this.width && y >= 0 && y < this.height;
+    return this._shipGrid[this._indexAt(x, y)] ?? null;
   }
 
   hasShipAt(x, y) {
@@ -100,8 +102,7 @@ class GameBoard {
     }
 
     for (let i = 0; i < ship.length; i++) {
-      let index = this._indexAt(x + i, y);
-      this._shipGrid[index] = ship;
+      this._shipGrid[this._indexAt(x + i, y)] = ship;
     }
     this._ships.push(ship);
   }
@@ -112,13 +113,39 @@ class GameBoard {
     }
 
     for (let i = 0; i < ship.length; i++) {
-      let index = this._indexAt(x, y + i);
-      this._shipGrid[index] = ship;
+      this._shipGrid[this._indexAt(x, y + i)] = ship;
     }
     this._ships.push(ship);
   }
 
-  //-- Private helper methods --//
+  //-- Ship attacks --
+
+  canBeAttacked(x, y) {
+    return this.isInBounds(x, y) && !this.hasBeenAttacked(x, y);
+  }
+
+  hasBeenAttacked(x, y) {
+    return !!this._attackGrid[this._indexAt(x, y)];
+  }
+
+  receiveAttack(x, y) {
+    if (!this.canBeAttacked(x, y)) {
+      throw new Error(`Can't attack ${x},${y}`);
+    }
+
+    // Mark index as attacked
+    this._attackGrid[this._indexAt(x, y)] = true;
+
+    // If there's a ship, mark it as hit.
+    const hitShip = this.shipAt(x, y);
+    if (hitShip) {
+      hitShip.hit();
+    }
+
+    return { x, y, hitShip };
+  }
+
+  //-- Private helper methods --
 
   _indexAt(x, y) {
     return (y * this.height) + x;

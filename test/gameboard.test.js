@@ -143,7 +143,6 @@ test('returns missed coordinates', () => {
 
 test('disallows attacking same coordinates twice', () => {
   let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
-  let otherShip = new Ship(3);
   let targetShip = new Ship(3);
   board.placeHorizontal(targetShip, 1, 2);
 
