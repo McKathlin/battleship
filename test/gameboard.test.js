@@ -11,6 +11,35 @@ test('remembers width and height', () => {
   expect(board.height).toBe(HEIGHT);
 });
 
+test(`counts valid coordinates as in bounds`, () => {
+  let WIDTH = 9;
+  let HEIGHT = 7;
+  let board = new GameBoard(WIDTH, HEIGHT);
+  expect(board.isInBounds(1, 2)).toBe(true);
+  expect(board.isInBounds(0, 0)).toBe(true);
+  expect(board.isInBounds(WIDTH - 1, HEIGHT - 1)).toBe(true);
+});
+
+test(`counts negative coordinates as out of bounds`, () => {
+  let WIDTH = 9;
+  let HEIGHT = 7;
+  let board = new GameBoard(WIDTH, HEIGHT);
+  expect(board.isInBounds(-1, 1)).toBe(false);
+  expect(board.isInBounds(-1, -1)).toBe(false);
+  expect(board.isInBounds(1, -1)).toBe(false);
+  expect(board.isInBounds(-3, 4)).toBe(false);
+});
+
+test(`counts too-large coordinates as out of bounds`, () => {
+  let WIDTH = 9;
+  let HEIGHT = 7;
+  let board = new GameBoard(WIDTH, HEIGHT);
+  expect(board.isInBounds(WIDTH, 2)).toBe(false);
+  expect(board.isInBounds(0, HEIGHT)).toBe(false);
+  expect(board.isInBounds(WIDTH + 3, HEIGHT)).toBe(false);
+  expect(board.isInBounds(-4, HEIGHT + 1)).toBe(false);
+});
+
 test('places horizontally', () => {
   let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
   let cruiser = new Ship(3);

@@ -37,6 +37,10 @@ class GameBoard {
   get height() {
     return this._height;
   }
+
+  isInBounds(x, y) {
+    return x >= 0 && x < this._width && y >= 0 && y < this._height;
+  }
 }
 
 export { Ship, GameBoard };
