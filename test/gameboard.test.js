@@ -157,9 +157,57 @@ test('disallows attacking same coordinates twice', () => {
 });
 
 test('remembers placed ships', () => {
-  // TODO
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let aShip = new Ship(3);
+  let anotherShip = new Ship(2);
+  let aShipNotPlaced = new Ship(3);
+  board.placeVertical(aShip, 0, 0);
+  board.placeHorizontal(anotherShip, 2, 1);
+
+  expect(board.ships).toHaveLength(2);
+  expect(board.ships).toContain(aShip);
+  expect(board.ships).toContain(anotherShip);
+  expect(board.ships).not.toContain(aShipNotPlaced);
 });
 
 test('remembers sunk ships', () => {
-  // TODO
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let sparedShip = new Ship(3);
+  let targetShip = new Ship(2);
+  board.placeHorizontal(sparedShip, 0, 0);
+  board.placeVertical(targetShip, 1, 1);
+
+  expect(board.sunkShips).toHaveLength(0);
+
+  // Sink target ship
+  board.receiveAttack(1, 1);
+  board.receiveAttack(1, 2);
+
+  // Hit spared ship, but don't sink it
+  board.receiveAttack(0, 0);
+
+  expect(board.sunkShips).toHaveLength(1);
+  expect(board.sunkShips).toContain(targetShip);
+  expect(board.sunkShips).not.toContain(sparedShip);
+});
+
+test('remembers surviving ships', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let sparedShip = new Ship(3);
+  let targetShip = new Ship(2);
+  board.placeHorizontal(sparedShip, 0, 0);
+  board.placeVertical(targetShip, 1, 1);
+
+  expect(board.survivingShips).toHaveLength(2);
+
+  // Sink target ship
+  board.receiveAttack(1, 1);
+  board.receiveAttack(1, 2);
+
+  // Hit spared ship, but don't sink it
+  board.receiveAttack(0, 0);
+
+  expect(board.survivingShips).toHaveLength(1);
+  expect(board.survivingShips).toContain(sparedShip);
+  expect(board.survivingShips).not.toContain(targetShip);
 });
