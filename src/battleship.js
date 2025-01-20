@@ -1,4 +1,3 @@
-
 class Ship {
   constructor(length) {
     this._length = length;
@@ -29,6 +28,18 @@ class GameBoard {
     this._ships = [];
     this._shipGrid = new Array(w * h);
     this._attackGrid = new Array(w * h);
+  }
+
+  get ships() {
+    return [...this._ships];
+  }
+
+  get sunkShips() {
+    return this._ships.filter((ship) => ship.isSunk());
+  }
+
+  get survivingShips() {
+    return this._ships.filter((ship) => !ship.isSunk());
   }
 
   get width() {
