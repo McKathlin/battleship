@@ -50,6 +50,10 @@ class GameBoard {
     return this._height;
   }
 
+  areAllShipsSunk() {
+    return this._ships.length > 0 && this._ships.every((ship) => ship.isSunk());
+  }
+
   isInBounds(x, y) {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }

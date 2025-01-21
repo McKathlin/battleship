@@ -211,3 +211,30 @@ test('remembers surviving ships', () => {
   expect(board.survivingShips).toContain(sparedShip);
   expect(board.survivingShips).not.toContain(targetShip);
 });
+
+test('detects all ships sunk', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+
+  let shipA = new Ship(3);
+  let shipB = new Ship(2);
+  board.placeHorizontal(shipA, 0, 0);
+  board.placeVertical(shipB, 1, 1);
+
+  // Sink Ship A
+  board.receiveAttack(0, 0);
+  board.receiveAttack(1, 0);
+  board.receiveAttack(2, 0);
+
+  expect(board.areAllShipsSunk()).toBe(false);
+
+  // Sink Ship B
+  board.receiveAttack(1, 1);
+  board.receiveAttack(1, 2);
+
+  expect(board.areAllShipsSunk()).toBe(true);
+});
+
+test('does not report all ships as sunk if none have been placed', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  expect(board.areAllShipsSunk()).toBe(false);
+});
