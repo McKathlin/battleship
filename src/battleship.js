@@ -238,8 +238,24 @@ class Player {
     return this.board.areAllShipsSunk();
   }
 
-  placeShip(ship, x, y) {
-    // TODO;
+  canPlaceHorizontal(ship, x, y) {
+    return this._board.canPlaceHorizontal(ship, x, y);
+  }
+
+  canPlaceVertical(ship, x, y) {
+    return this._board.canPlaceVertical(ship, x, y);
+  }
+
+  placeHorizontal(ship, x, y) {
+    this._mustOwnShip(ship);
+    this._board.placeHorizontal(ship, x, y);
+    this._markPlaced(ship);
+  }
+
+  placeVertical(ship, x, y) {
+    this._mustOwnShip(ship);
+    this._board.placeVertical(ship, x, y);
+    this._markPlaced(ship);
   }
 
   canAttack(x, y) {
@@ -254,6 +270,18 @@ class Player {
       throw new Error(`Player can't attack ${x},${y}`);
     }
     return this.opponent.board.receiveAttack(x, y);
+  }
+
+  // private helpers
+
+  _mustOwnShip(ship) {
+    if (!this._shipSetToPlace.has(ship) && !this.board.ships.includes(ship)) {
+      throw new Error("That's not this player's ship!");
+    }
+  }
+
+  _markPlaced(ship) {
+    this._shipSetToPlace.delete(ship);
   }
 }
 
