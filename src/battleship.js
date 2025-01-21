@@ -169,6 +169,7 @@ class GameBoard {
 
 const STANDARD_BOARD_WIDTH = 10;
 const STANDARD_BOARD_HEIGHT = 10;
+const STANDARD_SHIP_SPECS = [5, 4, 3, 3, 2];
 
 class Player {
   constructor({
@@ -178,10 +179,12 @@ class Player {
     attackAI = null,
     boardWidth = STANDARD_BOARD_WIDTH,
     boardHeight = STANDARD_BOARD_HEIGHT,
+    shipSpecs = STANDARD_SHIP_SPECS,
   } = {}) {
     this._placementAI = placementAI;
     this._attackAI = attackAI;
     this._board = new GameBoard(boardWidth, boardHeight);
+    this._shipSetToPlace = new Set(shipSpecs.map((length) => new Ship(length)));
     this.name = name;
     this.opponent = opponent;
   }
@@ -207,6 +210,14 @@ class Player {
     }
   }
 
+  get shipsToPlace() {
+    return [...this._shipSetToPlace];
+  }
+
+  get placedShips() {
+    return this._board.ships;
+  }
+
   isComputer() {
     return !!this._attackAI;
   }
@@ -215,8 +226,20 @@ class Player {
     return !this.isComputer();
   }
 
+  areAllShipsPlaced() {
+    return this._shipSetToPlace.size == 0;
+  }
+
+  wins() {
+    return this.opponent.loses();
+  }
+
   loses() {
     return this.board.areAllShipsSunk();
+  }
+
+  placeShip(ship, x, y) {
+    // TODO;
   }
 
   canAttack(x, y) {
