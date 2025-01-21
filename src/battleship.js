@@ -172,25 +172,39 @@ const STANDARD_BOARD_HEIGHT = 10;
 
 class Player {
   constructor({
+    name = 'Player',
+    opponent = null,
     placementAI = null,
     attackAI = null,
     boardWidth = STANDARD_BOARD_WIDTH,
     boardHeight = STANDARD_BOARD_HEIGHT,
-    opponent = null,
-  }) {
+  } = {}) {
+    this._placementAI = placementAI;
+    this._attackAI = attackAI;
     this._board = new GameBoard(boardWidth, boardHeight);
-    this._opponent = opponent;
-    if (opponent) {
-      opponent._opponent = this;
-    }
+    this.name = name;
+    this.opponent = opponent;
+  }
+
+  get board() {
+    return this._board;
+  }
+
+  get name() {
+    return this._name;
+  }
+  set name(str) {
+    this._name = str;
   }
 
   get opponent() {
     return this._opponent;
   }
-
-  get board() {
-    return this._board;
+  set opponent(otherPlayer) {
+    this._opponent = otherPlayer;
+    if (otherPlayer) {
+      otherPlayer._opponent = this;
+    }
   }
 
   isComputer() {
@@ -199,6 +213,10 @@ class Player {
 
   isHuman() {
     return !this.isComputer();
+  }
+
+  loses() {
+    return this.board.areAllShipsSunk();
   }
 
   canAttack(x, y) {
