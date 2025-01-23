@@ -210,8 +210,9 @@ class Player {
     }
   }
 
+  // Returns all not-yet-placed ships, longest to shortest.
   get shipsToPlace() {
-    return [...this._shipSetToPlace];
+    return [...this._shipSetToPlace].sort((a, b) => b.length - a.length);
   }
 
   get placedShips() {
