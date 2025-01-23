@@ -38,7 +38,7 @@ class RandomPlacementAI {
 
   placeAllShips(player) {
     for (const ship of player.shipsToPlace) {
-      shipPlaced = false;
+      let shipPlaced = false;
       while (!shipPlaced) {
         shipPlaced = this._tryPlaceShip(player, ship);
       }
@@ -57,10 +57,12 @@ class RandomPlacementAI {
     let funcPlace, funcCanPlace, shipWidth, shipHeight;
     if (this._randomBoolean()) {
       funcPlace = player.placeHorizontal;
+      funcCanPlace = player.canPlaceHorizontal;
       shipWidth = ship.length;
       shipHeight = 1;
     } else {
       funcPlace = player.placeVertical;
+      funcCanPlace = player.canPlaceVertical;
       shipWidth = 1;
       shipHeight = ship.length;
     }
