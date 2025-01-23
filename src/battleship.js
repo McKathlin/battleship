@@ -227,6 +227,15 @@ class Player {
     return !this.isComputer();
   }
 
+  autoPlaceShips() {
+    if (this._placementAI) {
+      this._placementAI.placeAllShips(this);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   areAllShipsPlaced() {
     return this._shipSetToPlace.size == 0;
   }

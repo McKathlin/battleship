@@ -1,4 +1,5 @@
 import { Player, GameBoard } from '../src/battleship.js';
+import { RandomPlacementAI } from '../src/placementAI.js';
 
 // Player property tests
 
@@ -84,6 +85,18 @@ test('detects when all ships are placed', () => {
 
   aPlayer.placeHorizontal(ships[1], 3, 2);
   expect(aPlayer.areAllShipsPlaced()).toBe(true);
+});
+
+test('auto-places ships if placementAI is present', () => {
+  let aPlayer = new Player({ placementAI: new RandomPlacementAI() });
+  expect(aPlayer.autoPlaceShips()).toBe(true);
+  expect(aPlayer.areAllShipsPlaced()).toBe(true);
+});
+
+test('does not auto-place ships if no placementAI is specified', () => {
+  let manualPlayer = new Player();
+  expect(manualPlayer.autoPlaceShips()).toBe(false);
+  expect(manualPlayer.areAllShipsPlaced()).toBe(false);
 });
 
 // Opponents and attacks
