@@ -34,44 +34,6 @@ test('gets a board', () => {
   expect(p.board).toBeInstanceOf(GameBoard);
 });
 
-// Opponents and attacks
-
-test('mutually sets opponent on init', () => {
-  let alice = new Player({ name: 'Alice'});
-  let bob = new Player({ name: 'Bob', opponent: alice });
-  expect(bob.opponent).toStrictEqual(alice);
-  expect(alice.opponent).toStrictEqual(bob);
-});
-
-test('mutually sets opponent with property', () => {
-  let tom = new Player({name: 'Tom'});
-  let jerry = new Player({name: 'Jerry'});
-
-  // No opponent until it's set
-  expect(tom.opponent).toBeNull();
-  expect(jerry.opponent).toBeNull();
-
-  // Opponents are mutual
-  tom.opponent = jerry;
-  expect(tom.opponent).toStrictEqual(jerry);
-  expect(jerry.opponent).toStrictEqual(tom);
-});
-
-test('attacks opponent board', () => {
-  let attacker = new Player();
-  let defender = new Player({ opponent: attacker });
-
-  const X = 3;
-  const Y = 4;
-  attacker.attack(X, Y);
-  expect(defender.board.hasBeenAttacked(X, Y)).toBe(true);
-});
-
-test('disallows attacking without opponent', () => {
-  let solo = new Player();
-  expect(() => solo.attack(1, 1)).toThrow();
-});
-
 // Ship placement
 
 test('starts with a default set of ships to place', () => {
@@ -124,6 +86,44 @@ test('detects when all ships are placed', () => {
   expect(aPlayer.areAllShipsPlaced()).toBe(true);
 });
 
+// Opponents and attacks
+
+test('mutually sets opponent on init', () => {
+  let alice = new Player({ name: 'Alice'});
+  let bob = new Player({ name: 'Bob', opponent: alice });
+  expect(bob.opponent).toStrictEqual(alice);
+  expect(alice.opponent).toStrictEqual(bob);
+});
+
+test('mutually sets opponent with property', () => {
+  let tom = new Player({name: 'Tom'});
+  let jerry = new Player({name: 'Jerry'});
+
+  // No opponent until it's set
+  expect(tom.opponent).toBeNull();
+  expect(jerry.opponent).toBeNull();
+
+  // Opponents are mutual
+  tom.opponent = jerry;
+  expect(tom.opponent).toStrictEqual(jerry);
+  expect(jerry.opponent).toStrictEqual(tom);
+});
+
+test('attacks opponent board', () => {
+  let attacker = new Player();
+  let defender = new Player({ opponent: attacker });
+
+  const X = 3;
+  const Y = 4;
+  attacker.attack(X, Y);
+  expect(defender.board.hasBeenAttacked(X, Y)).toBe(true);
+});
+
+test('disallows attacking without opponent', () => {
+  let solo = new Player();
+  expect(() => solo.attack(1, 1)).toThrow();
+});
+
 test('loses if all ships sink', () => {
   let attacker = new Player();
   let defender = new Player({
@@ -148,5 +148,4 @@ test('loses if all ships sink', () => {
   expect(attacker.loses()).toBe(false);
   expect(attacker.wins()).toBe(true);
 });
-
 
