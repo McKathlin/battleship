@@ -1,3 +1,9 @@
+import Observable from './lib/observable.js';
+
+//=============================================================================
+// Ship
+//=============================================================================
+
 class Ship {
   constructor(length) {
     this._length = length;
@@ -21,8 +27,13 @@ class Ship {
   }
 }
 
-class GameBoard {
+//=============================================================================
+// GameBoard
+//=============================================================================
+
+class GameBoard extends Observable {
   constructor(w, h) {
+    super();
     this._width = w;
     this._height = h;
     this._ships = [];
@@ -118,6 +129,12 @@ class GameBoard {
 
     for (let i = 0; i < ship.length; i++) {
       this._shipGrid[this._indexAt(x + i, y)] = ship;
+      this.notifyChanged({
+        x: x + i,
+        y,
+        action: 'place',
+        ship,
+      });
     }
     this._ships.push(ship);
   }
@@ -129,6 +146,12 @@ class GameBoard {
 
     for (let i = 0; i < ship.length; i++) {
       this._shipGrid[this._indexAt(x, y + i)] = ship;
+      this.notifyChanged({
+        x,
+        y: y + i,
+        action: 'place',
+        ship,
+      });
     }
     this._ships.push(ship);
   }
@@ -153,10 +176,15 @@ class GameBoard {
 
     // If there's a ship, mark it as hit.
     const hitShip = this.shipAt(x, y);
+    let result;
     if (hitShip) {
       hitShip.hit();
+      result = 'hit';
+    } else {
+      result = 'miss';
     }
 
+    this.notifyChanged({ x, y, ship: hitShip, action: 'attack', result });
     return { x, y, hitShip };
   }
 
@@ -171,7 +199,11 @@ const STANDARD_BOARD_WIDTH = 10;
 const STANDARD_BOARD_HEIGHT = 10;
 const STANDARD_SHIP_SPECS = [5, 4, 3, 3, 2];
 
-class Player {
+//=============================================================================
+// Player
+//=============================================================================
+
+class Player extends Observable {
   constructor({
     name = 'Player',
     opponent = null,
@@ -181,10 +213,13 @@ class Player {
     boardHeight = STANDARD_BOARD_HEIGHT,
     shipSpecs = STANDARD_SHIP_SPECS,
   } = {}) {
+    super();
     this._placementAI = placementAI;
     this._attackAI = attackAI;
     this._board = new GameBoard(boardWidth, boardHeight);
-    this._shipSetToPlace = new Set(shipSpecs.map((length) => new Ship(length)));
+    this._shipSetToPlace = new Set(
+      shipSpecs.map((length) => new Ship(length))
+    );
     this.name = name;
     this.opponent = opponent;
   }
@@ -198,6 +233,7 @@ class Player {
   }
   set name(str) {
     this._name = str;
+    this.notifyChanged({ property: 'name' });
   }
 
   get opponent() {
@@ -208,6 +244,7 @@ class Player {
     if (otherPlayer) {
       otherPlayer._opponent = this;
     }
+    this.notifyChanged({ property: 'opponent' });
   }
 
   // Returns all not-yet-placed ships, longest to shortest.
