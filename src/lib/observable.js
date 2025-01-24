@@ -18,7 +18,7 @@ export default class Observable {
   }
 
   notifyChanged(event = {}) {
-    event.sender = this;
+    event.sender ??= this;
     this._observers.forEach((onChange) => onChange(event));
   }
 }
