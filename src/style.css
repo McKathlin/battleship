@@ -1,8 +1,50 @@
 body {
   color: #d1e7dd;
   background-color: #214070;
+  height: 100vh;
+  overflow: hidden;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
 }
 
 a {
   color: #eeffbb;
+}
+
+main {
+  flex: 1;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+section#player {
+  background-color: #2460ad;
+}
+
+section#opponent {
+  color: #323130;
+  background-color: #dddad8;
+}
+
+@media (min-width: 600px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  section#player {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  section#opponent {
+    grid-row: 1;
+    grid-column: 2;
+  }
 }
