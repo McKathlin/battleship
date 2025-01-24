@@ -214,12 +214,17 @@ class Player extends Observable {
     shipSpecs = STANDARD_SHIP_SPECS,
   } = {}) {
     super();
+
     this._placementAI = placementAI;
     this._attackAI = attackAI;
+
     this._board = new GameBoard(boardWidth, boardHeight);
+    this._board.subscribe(this._onBoardChange.bind(this));
+
     this._shipSetToPlace = new Set(
       shipSpecs.map((length) => new Ship(length))
     );
+
     this.name = name;
     this.opponent = opponent;
   }
@@ -317,6 +322,16 @@ class Player extends Observable {
       throw new Error(`Player can't attack ${x},${y}`);
     }
     return this.opponent.board.receiveAttack(x, y);
+  }
+
+  // private event handling
+
+  _onBoardChange(boardEventArgs) {
+    const eventArgs = Object.assign({},
+      boardEventArgs,
+      { sender: this, property: 'board' },
+    );
+    this.notifyChanged(eventArgs);
   }
 
   // private helpers
