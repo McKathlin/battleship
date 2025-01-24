@@ -2,7 +2,6 @@ body {
   color: #d1e7dd;
   background-color: #214070;
   height: 100vh;
-  overflow: hidden;
   text-align: center;
 
   display: flex;
@@ -23,14 +22,52 @@ main {
   grid-template-rows: 1fr 1fr;
 }
 
+/* Player section */
+
 section#player {
-  background-color: #2460ad;
+  padding: 10px;
 }
 
-section#opponent {
-  color: #323130;
-  background-color: #dddad8;
+section#player .board {
+  background-color: #193258;
+  max-height: calc(100vh - 14rem);
+  margin: auto;
+  padding: 5px;
+
+  display: grid;
+  gap: 2px;
+  /* Grid columns and rows are defined dynamically. */
 }
+
+section#player .board .cell {
+  background-color: #124d9b;
+}
+
+/* Opponent section */
+
+section#opponent {
+  --section-back-color: #dad1cc;
+  color: #323130;
+  background-color: var(--section-back-color, white);
+  padding: 10px 20px;
+}
+
+section#opponent .board {
+  background-color: #8b8983;
+  max-height: calc(100vh - 18rem);
+  margin: auto;
+  padding: 2px;
+
+  display: grid;
+  gap: 2px;
+  /* Grid columns and rows are defined dynamically. */
+}
+
+section#opponent .board .cell {
+  background-color: var(--section-back-color, white);
+}
+
+/* Wide screen adjustments*/
 
 @media (min-width: 600px) {
   main {
