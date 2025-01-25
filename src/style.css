@@ -1,0 +1,102 @@
+body {
+  color: #d1e7dd;
+  background-color: #214070;
+  height: 100vh;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+a {
+  color: #eeffbb;
+}
+
+main {
+  flex: 1;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+/* Header */
+
+header {
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+  gap: 10px;
+}
+
+header #message {
+  color: #181a1d;
+  background-color: rgb(150, 177, 212);
+  line-height: 3rem;
+  border-radius: 11px;
+}
+
+/* Player Ships section */
+
+section#player {
+  padding: 10px;
+}
+
+section#player .board {
+  background-color: #193258;
+  max-height: calc(100vh - 14rem);
+  margin: auto;
+  padding: 5px;
+
+  display: grid;
+  gap: 2px;
+  /* Grid columns and rows are defined dynamically. */
+}
+
+section#player .board .cell {
+  background-color: #124d9b;
+}
+
+/* Attacks on Opponent section */
+
+section#opponent {
+  --section-back-color: #dad1cc;
+  color: #323130;
+  background-color: var(--section-back-color, white);
+  padding: 10px 20px;
+}
+
+section#opponent .board {
+  background-color: #8b8983;
+  max-height: calc(100vh - 18rem);
+  margin: auto;
+  padding: 2px;
+
+  display: grid;
+  gap: 2px;
+  /* Grid columns and rows are defined dynamically. */
+}
+
+section#opponent .board .cell {
+  background-color: var(--section-back-color, white);
+}
+
+/* Wide screen adjustments*/
+
+@media (min-width: 600px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  section#player {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  section#opponent {
+    grid-row: 1;
+    grid-column: 2;
+  }
+}
