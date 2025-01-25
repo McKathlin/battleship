@@ -22,7 +22,22 @@ main {
   grid-template-rows: 1fr 1fr;
 }
 
-/* Player section */
+/* Header */
+
+header {
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+  gap: 10px;
+}
+
+header #message {
+  color: #181a1d;
+  background-color: rgb(150, 177, 212);
+  line-height: 3rem;
+  border-radius: 11px;
+}
+
+/* Player Ships section */
 
 section#player {
   padding: 10px;
@@ -43,7 +58,7 @@ section#player .board .cell {
   background-color: #124d9b;
 }
 
-/* Opponent section */
+/* Attacks on Opponent section */
 
 section#opponent {
   --section-back-color: #dad1cc;

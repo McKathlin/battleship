@@ -23,11 +23,12 @@ function setupBoardView(boardNode, gameBoard) {
   }
 }
 
+function setMessage(text) {
+  document.getElementById('message').innerText = text;
+}
+
 let player = new Player();
 let opponent = new Player({ opponent: player });
-
-console.log(player);
-console.log(opponent);
 
 setupBoardView(
   document.getElementById('player-board'),
@@ -38,3 +39,5 @@ setupBoardView(
   document.getElementById('opponent-board'),
   opponent.board,
 );
+
+setMessage("This game is under construction.");
