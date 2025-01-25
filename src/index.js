@@ -1,6 +1,6 @@
 import "./style.css";
 
-console.log("index.js loaded!");
+import { Player } from "./battleship.js";
 
 function setupBoardView(boardNode, gameBoard) {
   const aspectRatio = gameBoard.width / gameBoard.height;
@@ -23,12 +23,18 @@ function setupBoardView(boardNode, gameBoard) {
   }
 }
 
+let player = new Player();
+let opponent = new Player({ opponent: player });
+
+console.log(player);
+console.log(opponent);
+
 setupBoardView(
   document.getElementById('player-board'),
-  { width: 10, height: 10 }
+  player.board,
 );
 
 setupBoardView(
   document.getElementById('opponent-board'),
-  { width: 10, height: 10 }
+  opponent.board,
 );
