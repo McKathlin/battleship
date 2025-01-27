@@ -4,79 +4,190 @@ import { Player } from "./battleship-objects.js";
 import { PredeterminedPlacementAI } from "./placementAI.js";
 
 class GridController {
-  constructor(containerNode, columnCount, rowCount) {
+  constructor(containerNode) {
     this._containerNode = containerNode;
-    this._columnCount = columnCount;
-    this._rowCount = rowCount;
+    this._containerNode.addEventListener('click', this._onClick.bind(this));
+  }
+
+  bindPlayer(player) {
+    // Change player and associated subscriptions
+    if (this._player) {
+      this._player.unsubscribe(this._onPlayerChange.bind(this));
+    }
+    this._player = player;
+    this._player.subscribe(this._onPlayerChange.bind(this));
+
+    // Update board display
     this._setupStyle();
-    this._cells = this._makeCells();
+    this._setupCells();
   }
 
-  cellNodeAt(column, row) {
-    let index = (row * this._columnCount) + column;
-    return this._cells[index];
+  get columnCount() {
+    if (this._player) {
+      return this._player.board.width;
+    } else {
+      return 0;
+    }
   }
 
-  //-- private helpers --
+  get rowCount() {
+    if (this._player) {
+      return this._player.board.height;
+    } else {
+      return 0;
+    }
+  }
+
+  setCellClickListener(func) {
+    this._onCellClick = func;
+  }
+
+  setCellChangeListener(func) {
+    this._onCellChange = func;
+  }
+
+  cellNodeAtCoords(x, y) {
+    return document.getElementById(this.idAtCoords(x, y));
+  }
+
+  idAtCoords(x, y) {
+    return `${this._containerNode.id},${x},${y}`;
+  }
+
+  coordsAtId(id) {
+    let [containerId, x, y] = id.split(',');
+    return { x, y };
+  }
+
+  //-- private event handling --
+
+  _onPlayerChange(event) {
+    if (this._onCellChange) {
+      let cellNode = this.cellNodeAtCoords(event.x, event.y);
+      this._onCellChange(cellNode, event);
+    }
+  }
+
+  _onClick(event) {
+    if (event.target.classList.contains('cell')) {
+      if (this._onCellClick) {
+        // TODO: incorporate coords into cellEventArgs
+        let cellEventArgs = Object.assign(
+          {},
+          this.coordsAtId(event.target.id),
+          { player: this._player },
+        );
+        this._onCellClick(event.target, cellEventArgs);
+      }
+    }
+  }
+
+  //-- private setup helpers --
 
   _setupStyle() {
-    const aspectRatio = this._columnCount / this._rowCount;
+    const aspectRatio = this.columnCount / this.rowCount;
     this._containerNode.style.setProperty('aspect-ratio', aspectRatio);
     this._containerNode.style.setProperty(
       'grid-template-columns',
-      `repeat(${this._columnCount}, 1fr)`
+      `repeat(${this.columnCount}, 1fr)`
     );
     this._containerNode.style.setProperty(
       'grid-template-rows',
-      `repeat(${this._rowCount}, 1fr)`
+      `repeat(${this.rowCount}, 1fr)`
     );
   }
 
-  _makeCells() {
-    let cells = [];
-    for (let i = 0; i < this._rowCount; i++) {
-      for (let j = 0; j < this._columnCount; j++) {
+  _setupCells() {
+    this._containerNode.replaceChildren();
+    // For every possible coordinate pair on the board...
+    for (let y = 0; y < this.rowCount; y++) {
+      for (let x = 0; x < this.columnCount; x++) {
+        // Create a cell here.
         let cellNode = document.createElement('div');
         cellNode.classList.add('cell');
-        cells.push(cellNode);
+        cellNode.id = this.idAtCoords(x, y);
+        if (this._onCellChange) {
+          // Refresh the cell to reflect the player's current board.
+          this._onCellChange(
+            cellNode, 
+            { sender: this._player, action: 'bind', x, y },
+          );
+        }
         this._containerNode.appendChild(cellNode);
-      }
-    }
-    return cells;
-  }
-}
+      } // end for x
+    } // end for y
+  } // end _setupCells()
+
+} // end class GridController
+
+const ShipBoardController = (function() {
+  const _gridController = new GridController(
+    document.getElementById('player-board')
+  );
+
+  _gridController.setCellChangeListener(function(cellNode, eventArgs) {
+    console.log(`Ship board changed at ${eventArgs.x},${eventArgs.y}`);
+    // TODO
+  });
+
+  _gridController.setCellClickListener(function(cellNode, eventArgs) {
+    console.log(`Ship board clicked at ${eventArgs.x},${eventArgs.y}`);
+    // TODO
+  });
+
+  const bindPlayer = function(player) {
+    _gridController.bindPlayer(player);
+  };
+
+  return { bindPlayer };
+}());
+
+const AttackBoardController = (function() {
+  const _gridController = new GridController(
+    document.getElementById('opponent-board')
+  );
+
+  _gridController.setCellChangeListener(function(cellNode, eventArgs) {
+    console.log(`Attack board changed at ${eventArgs.x},${eventArgs.y}`);
+    // TODO
+  });
+
+  _gridController.setCellClickListener(function(cellNode, eventArgs) {
+    console.log(`Attack board clicked at ${eventArgs.x},${eventArgs.y}`);
+    // TODO
+  });
+
+  const bindPlayer = function(player) {
+    _gridController.bindPlayer(player);
+  };
+
+  return { bindPlayer };
+}());
 
 const GameController = (function() {
   const _messageNode = document.getElementById('message');
 
-  const _shipBoardNode = document.getElementById('player-board');
-  const _attackBoardNode = document.getElementById('opponent-board');
+  let player1 = null;
+  let player2 = null;
 
   const setMessage = function(text) {
     _messageNode.innerText = text;
-  }
+  };
 
   const startNewGame = function() {
-    let player = new Player({
+    player1 = new Player({
       placementAI: new PredeterminedPlacementAI(),
     });
+    player1.autoPlaceShips();
     
-    let opponent = new Player({
+    player2 = new Player({
       placementAI: new PredeterminedPlacementAI(),
-      opponent: player
+      opponent: player1
     });
-    
-    let shipGridController = new GridController(
-      _shipBoardNode,
-      player.board.width,
-      player.board.height,
-    );
-    
-    let attackGridController = new GridController(
-      _attackBoardNode,
-      opponent.board.width,
-      opponent.board.height,
-    );
+    player2.autoPlaceShips();
+
+    ShipBoardController.bindPlayer(player1);
+    AttackBoardController.bindPlayer(player2);
     
     setMessage("This game is under construction.");
   }
