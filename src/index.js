@@ -1,6 +1,7 @@
 import "./style.css";
 
 import { Player } from "./battleship-objects.js";
+import { PredeterminedPlacementAI } from "./placementAI.js";
 
 class GridController {
   constructor(containerNode, columnCount, rowCount) {
@@ -45,24 +46,49 @@ class GridController {
   }
 }
 
+const GameController = (function() {
+  const _messageNode = document.getElementById('message');
 
-function setMessage(text) {
-  document.getElementById('message').innerText = text;
-}
+  const _shipBoardNode = document.getElementById('player-board');
+  const _attackBoardNode = document.getElementById('opponent-board');
 
-let player = new Player();
-let opponent = new Player({ opponent: player });
+  const setMessage = function(text) {
+    _messageNode.innerText = text;
+  }
 
-let shipGridController = new GridController(
-  document.getElementById('player-board'),
-  player.board.width,
-  player.board.height,
-);
+  const startNewGame = function() {
+    let player = new Player({
+      placementAI: new PredeterminedPlacementAI(),
+    });
+    
+    let opponent = new Player({
+      placementAI: new PredeterminedPlacementAI(),
+      opponent: player
+    });
+    
+    let shipGridController = new GridController(
+      _shipBoardNode,
+      player.board.width,
+      player.board.height,
+    );
+    
+    let attackGridController = new GridController(
+      _attackBoardNode,
+      opponent.board.width,
+      opponent.board.height,
+    );
+    
+    setMessage("This game is under construction.");
+  }
 
-let attackGridController = new GridController(
-  document.getElementById('opponent-board'),
-  opponent.board.width,
-  opponent.board.height,
-);
+  return {
+    setMessage,
+    startNewGame,
+  };
+}());
 
-setMessage("This game is under construction.");
+GameController.startNewGame();
+
+
+
+
