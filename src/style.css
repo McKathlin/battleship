@@ -92,14 +92,17 @@ section#opponent .board {
 
 section#opponent .board .cell {
   background-color: var(--section-back-color, white);
+  cursor: pointer;
 }
 
 section#opponent .board .cell.hit {
   background-color: #c94a00;
+  cursor: default;
 }
 
 section#opponent .board .cell.miss {
   background-color: #88acb4;
+  cursor: default;
 }
 
 /* Wide screen adjustments*/
