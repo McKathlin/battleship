@@ -94,12 +94,12 @@ section#opponent .board .cell {
   background-color: var(--section-back-color, white);
 }
 
-section#player .board .cell.hit {
+section#opponent .board .cell.hit {
   background-color: #c94a00;
 }
 
-section#player .board .cell.miss {
-  background-color: #7899a0;
+section#opponent .board .cell.miss {
+  background-color: #88acb4;
 }
 
 /* Wide screen adjustments*/
