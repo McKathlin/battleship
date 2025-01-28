@@ -191,7 +191,7 @@ class GameBoard extends Observable {
   //-- Private helper methods --
 
   _indexAt(x, y) {
-    return (y * this.height) + x;
+    return (Number.parseInt(y) * this.width) + Number.parseInt(x);
   }
 }
 
