@@ -1,4 +1,4 @@
-import { Player, GameBoard } from '../src/battleship.js';
+import { Player, GameBoard } from '../src/battleship-objects.js';
 import { RandomPlacementAI } from '../src/placementAI.js';
 
 // Player property tests
