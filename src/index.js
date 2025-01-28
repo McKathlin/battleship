@@ -121,19 +121,42 @@ class GridController {
 } // end class GridController
 
 const ShipBoardController = (function() {
+  // TODO: Implement drag and drop ship placement.
+
   const _gridController = new GridController(
     document.getElementById('player-board')
   );
 
-  _gridController.setCellChangeListener(function(cellNode, eventArgs) {
-    console.log(`Ship board changed at ${eventArgs.x},${eventArgs.y}`);
-    // TODO
+  _gridController.setCellChangeListener(function(cellNode, eventArgs
+  ) {
+    // Refresh this cellNode; make it up-to-date with board state.
+    let { x, y, sender: { board } } = eventArgs;
+    if (board.hasShipAt(x, y)) {
+      // There's a ship here. A missed attack should not show.
+      cellNode.classList.add('ship');
+      cellNode.classList.remove('miss');
+
+      // Show a hit only if applicable.
+      if (board.hasBeenAttacked(x, y)) {
+        cellNode.classList.add('hit');
+      } else {
+        cellNode.classList.remove('hit');
+      }
+    } else {
+      // No ship here.
+      cellNode.classList.remove('ship');
+      cellNode.classList.remove('hit');
+
+      // Show a miss  only if applicable.
+      if (board.hasBeenAttacked(x, y)) {
+        cellNode.classList.add('miss');
+      } else {
+        cellNode.classList.remove('miss');
+      }
+    }
   });
 
-  _gridController.setCellClickListener(function(cellNode, eventArgs) {
-    console.log(`Ship board clicked at ${eventArgs.x},${eventArgs.y}`);
-    // TODO
-  });
+  _gridController.setCellClickListener();
 
   const bindPlayer = function(player) {
     _gridController.bindPlayer(player);
