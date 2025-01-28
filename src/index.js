@@ -2,6 +2,7 @@ import "./style.css";
 
 import { Player } from "./battleship-objects.js";
 import { PredeterminedPlacementAI } from "./placementAI.js";
+import { RandomAttackAI } from "./attackAI.js";
 
 class GridController {
   constructor(containerNode) {
@@ -191,7 +192,7 @@ const AttackBoardController = (function() {
   _gridController.setCellClickListener(function(cellNode, eventArgs) {
     if (_attacker.canAttack(eventArgs.x, eventArgs.y)) {
       _attacker.attack(eventArgs.x, eventArgs.y);
-      // TODO: Block further attacks until it's the player's turn again.
+      // TODO: Lock the attack grid until it's the player's turn again.
     }
   });
 
@@ -215,13 +216,16 @@ const GameController = (function() {
 
   const startNewGame = function() {
     player1 = new Player({
+      name: 'Player 1',
       placementAI: new PredeterminedPlacementAI(),
     });
     player1.subscribe(_onPlayerAction.bind(this));
     player1.autoPlaceShips();
     
     player2 = new Player({
+      name: 'CPU',
       placementAI: new PredeterminedPlacementAI(),
+      attackAI: new RandomAttackAI(),
       opponent: player1
     });
     player2.subscribe(_onPlayerAction.bind(this));
@@ -240,12 +244,12 @@ const GameController = (function() {
     }
   }
 
-  const startTurn = function (player) {
-    // TODO:
+  const startTurn = function(player) {
     if (player.isHuman()) {
-      // Unlock the attack grid so they can attack.
+      // TODO: Unlock the attack grid so they can attack.
     } else {
-      // Set a brief timer to auto-attack.
+      // TODO: Set a brief timer before auto-attack.
+      player.autoAttack();
     }
   }
 
