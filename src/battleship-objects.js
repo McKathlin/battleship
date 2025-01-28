@@ -184,7 +184,7 @@ class GameBoard extends Observable {
       result = 'miss';
     }
 
-    this.notifyChanged({ x, y, ship: hitShip, action: 'attack', result });
+    this.notifyChanged({ x, y, ship: hitShip, action: 'receiveAttack', result });
     return { x, y, hitShip };
   }
 
@@ -321,7 +321,9 @@ class Player extends Observable {
     if (!this.canAttack(x, y)) {
       throw new Error(`Player can't attack ${x},${y}`);
     }
-    return this.opponent.board.receiveAttack(x, y);
+    let result = this.opponent.board.receiveAttack(x, y);
+    this.notifyChanged({ action: 'attack', x, y, result });
+    return result;
   }
 
   // private event handling

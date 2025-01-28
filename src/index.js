@@ -191,6 +191,7 @@ const AttackBoardController = (function() {
   _gridController.setCellClickListener(function(cellNode, eventArgs) {
     if (_attacker.canAttack(eventArgs.x, eventArgs.y)) {
       _attacker.attack(eventArgs.x, eventArgs.y);
+      // TODO: Block further attacks until it's the player's turn again.
     }
   });
 
@@ -216,18 +217,36 @@ const GameController = (function() {
     player1 = new Player({
       placementAI: new PredeterminedPlacementAI(),
     });
+    player1.subscribe(_onPlayerAction.bind(this));
     player1.autoPlaceShips();
     
     player2 = new Player({
       placementAI: new PredeterminedPlacementAI(),
       opponent: player1
     });
+    player2.subscribe(_onPlayerAction.bind(this));
     player2.autoPlaceShips();
 
     ShipBoardController.bindPlayer(player1);
     AttackBoardController.bindPlayer(player2);
     
     setMessage("This game is under construction.");
+  }
+
+  const _onPlayerAction = function(eventArgs) {
+    if (eventArgs.action == 'attack') {
+      console.log("A player attacked."); // TODO: remove
+      startTurn(eventArgs.sender.opponent);
+    }
+  }
+
+  const startTurn = function (player) {
+    // TODO:
+    if (player.isHuman()) {
+      // Unlock the attack grid so they can attack.
+    } else {
+      // Set a brief timer to auto-attack.
+    }
   }
 
   return {
