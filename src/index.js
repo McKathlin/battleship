@@ -166,21 +166,36 @@ const ShipBoardController = (function() {
 }());
 
 const AttackBoardController = (function() {
+  let _attacker = null;
+
   const _gridController = new GridController(
     document.getElementById('opponent-board')
   );
 
   _gridController.setCellChangeListener(function(cellNode, eventArgs) {
-    console.log(`Attack board changed at ${eventArgs.x},${eventArgs.y}`);
-    // TODO
+    // Refresh this cellNode; make it up-to-date with board state.
+    let { x, y, sender: { board } } = eventArgs;
+    cellNode.classList.remove('hit');
+    cellNode.classList.remove('miss');
+    if (board.hasBeenAttacked(x, y)) {
+      if (board.hasShipAt(x, y)) {
+        console.log('hit at', x, y);
+        cellNode.classList.add('hit');
+      } else {
+        console.log('miss at', x, y);
+        cellNode.classList.add('miss');
+      }
+    }
   });
 
   _gridController.setCellClickListener(function(cellNode, eventArgs) {
-    console.log(`Attack board clicked at ${eventArgs.x},${eventArgs.y}`);
-    // TODO
+    if (_attacker.canAttack(eventArgs.x, eventArgs.y)) {
+      _attacker.attack(eventArgs.x, eventArgs.y);
+    }
   });
 
   const bindPlayer = function(player) {
+    _attacker = player.opponent;
     _gridController.bindPlayer(player);
   };
 
