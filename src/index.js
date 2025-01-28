@@ -209,6 +209,7 @@ const GameController = (function() {
 
   let player1 = null;
   let player2 = null;
+  let currentPlayer = null;
 
   const setMessage = function(text) {
     _messageNode.innerText = text;
@@ -233,29 +234,45 @@ const GameController = (function() {
 
     ShipBoardController.bindPlayer(player1);
     AttackBoardController.bindPlayer(player2);
+    currentPlayer = player1;
     
-    setMessage("This game is under construction.");
+    setMessage("Make your move.");
   }
+
+  const startNextTurn = function() {
+    // Check for a win.
+    if (currentPlayer.wins()) {
+      setMessage(`${currentPlayer.name} wins!`);
+      return;
+    }
+
+    // Change whose turn it is.
+    currentPlayer = currentPlayer.opponent;
+
+    // Start the turn.
+    if (currentPlayer.isHuman()) {
+      // TODO: Unlock the attack grid so they can attack.
+    } else {
+      // TODO: Set a brief timer before auto-attack.
+      currentPlayer.autoAttack();
+    }
+  };
+
+  //-- Private event handling --
 
   const _onPlayerAction = function(eventArgs) {
     if (eventArgs.action == 'attack') {
       console.log("A player attacked."); // TODO: remove
-      startTurn(eventArgs.sender.opponent);
+      startNextTurn();
     }
-  }
+  };
 
-  const startTurn = function(player) {
-    if (player.isHuman()) {
-      // TODO: Unlock the attack grid so they can attack.
-    } else {
-      // TODO: Set a brief timer before auto-attack.
-      player.autoAttack();
-    }
-  }
+  //-- Public returns --
 
   return {
     setMessage,
     startNewGame,
+    startNextTurn,
   };
 }());
 
