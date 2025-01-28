@@ -325,6 +325,14 @@ class Player extends Observable {
     this.notifyChanged({ action: 'attack', x, y, result });
     return result;
   }
+  
+  autoAttack() {
+    if (this._attackAI) {
+      return this._attackAI.attackAs(this);
+    } else {
+      return null;
+    }
+  }
 
   // private event handling
 
