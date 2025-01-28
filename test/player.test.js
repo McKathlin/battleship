@@ -1,5 +1,6 @@
 import { Player, GameBoard } from '../src/battleship-objects.js';
 import { RandomPlacementAI } from '../src/placementAI.js';
+import { RandomAttackAI } from '../src/attackAI.js';
 
 // Player property tests
 
@@ -130,6 +131,19 @@ test('attacks opponent board', () => {
   const Y = 4;
   attacker.attack(X, Y);
   expect(defender.board.hasBeenAttacked(X, Y)).toBe(true);
+});
+
+test('auto-attacks if AI present', () => {
+  const attacker = new Player({ attackAI: new RandomAttackAI() });
+  const defender = new Player({ opponent: attacker });
+
+  const attackResult = attacker.autoAttack();
+  expect(attackResult).toHaveProperty('x');
+  expect(attackResult).toHaveProperty('y');
+
+  expect(
+    defender.board.hasBeenAttacked(attackResult.x, attackResult.y)
+  ).toBe(true);
 });
 
 test('disallows attacking without opponent', () => {

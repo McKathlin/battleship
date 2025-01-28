@@ -13,4 +13,4 @@ test('RandomAttackAI autoAttack does an attack', () => {
   expect(
     defender.board.hasBeenAttacked(attackResult.x, attackResult.y)
   ).toBe(true);
-})
+});
