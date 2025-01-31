@@ -39,25 +39,25 @@ class GridController {
     }
   }
 
-  setCellClickListener(func) {
-    this._onCellClick = func;
-  }
-
-  setCellChangeListener(func) {
-    this._onCellChange = func;
-  }
-
   cellNodeAtCoords(x, y) {
     return document.getElementById(this.idAtCoords(x, y));
+  }
+
+  coordsAtId(id) {
+    let [containerId, x, y] = id.split(',');
+    return { x, y };
   }
 
   idAtCoords(x, y) {
     return `${this._containerNode.id},${x},${y}`;
   }
 
-  coordsAtId(id) {
-    let [containerId, x, y] = id.split(',');
-    return { x, y };
+  setCellClickListener(func) {
+    this._onCellClick = func;
+  }
+
+  setCellChangeListener(func) {
+    this._onCellChange = func;
   }
 
   //-- private event handling --
@@ -124,69 +124,61 @@ class GridController {
 const ShipBoardController = (function() {
   // TODO: Implement drag and drop ship placement.
 
+  let _board = null;
+
   const _gridController = new GridController(
     document.getElementById('player-board')
   );
 
   _gridController.setCellChangeListener(function(cellNode, eventArgs
   ) {
-    // Refresh this cellNode; make it up-to-date with board state.
-    let { x, y, sender: { board } } = eventArgs;
-    if (board.hasShipAt(x, y)) {
+    _refreshCell(cellNode, eventArgs.x, eventArgs.y);
+  });
+
+  const bindPlayer = function(player) {
+    _board = player.board;
+    _gridController.bindPlayer(player);
+  };
+
+  const _refreshCell = function(cellNode, x, y) {
+    if (_board.hasShipAt(x, y)) {
       // There's a ship here. A missed attack should not show.
       cellNode.classList.add('ship');
       cellNode.classList.remove('miss');
 
       // Show a hit only if applicable.
-      if (board.hasBeenAttacked(x, y)) {
+      if (_board.hasBeenAttacked(x, y)) {
         cellNode.classList.add('hit');
       } else {
         cellNode.classList.remove('hit');
       }
     } else {
-      // No ship here.
+      // No ship here to hit.
       cellNode.classList.remove('ship');
       cellNode.classList.remove('hit');
 
-      // Show a miss  only if applicable.
-      if (board.hasBeenAttacked(x, y)) {
+      // Show a miss only if applicable.
+      if (_board.hasBeenAttacked(x, y)) {
         cellNode.classList.add('miss');
       } else {
         cellNode.classList.remove('miss');
       }
     }
-  });
-
-  _gridController.setCellClickListener();
-
-  const bindPlayer = function(player) {
-    _gridController.bindPlayer(player);
-  };
+  }
 
   return { bindPlayer };
 }());
 
 const AttackBoardController = (function() {
   let _attacker = null;
+  let _board = null;
 
   const _gridController = new GridController(
     document.getElementById('opponent-board')
   );
 
   _gridController.setCellChangeListener(function(cellNode, eventArgs) {
-    // Refresh this cellNode; make it up-to-date with board state.
-    let { x, y, sender: { board } } = eventArgs;
-    cellNode.classList.remove('hit');
-    cellNode.classList.remove('miss');
-    if (board.hasBeenAttacked(x, y)) {
-      if (board.hasShipAt(x, y)) {
-        console.log('hit at', x, y);
-        cellNode.classList.add('hit');
-      } else {
-        console.log('miss at', x, y);
-        cellNode.classList.add('miss');
-      }
-    }
+    _refreshCell(cellNode, eventArgs.x, eventArgs.y);
   });
 
   _gridController.setCellClickListener(function(cellNode, eventArgs) {
@@ -198,8 +190,23 @@ const AttackBoardController = (function() {
 
   const bindPlayer = function(player) {
     _attacker = player.opponent;
+    _board = player.board;
     _gridController.bindPlayer(player);
   };
+
+  const _refreshCell = function(cellNode, x, y) {
+    cellNode.classList.remove('hit');
+    cellNode.classList.remove('miss');
+    if (_board.hasBeenAttacked(x, y)) {
+      if (_board.hasShipAt(x, y)) {
+        console.log('hit at', x, y);
+        cellNode.classList.add('hit');
+      } else {
+        console.log('miss at', x, y);
+        cellNode.classList.add('miss');
+      }
+    }
+  }
 
   return { bindPlayer };
 }());
