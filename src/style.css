@@ -90,6 +90,10 @@ section#opponent .board {
   /* Grid columns and rows are defined dynamically. */
 }
 
+section#opponent .board.locked, section#opponent .board.locked .cell {
+  cursor: wait !important;
+}
+
 section#opponent .board .cell {
   background-color: var(--section-back-color, white);
   cursor: pointer;

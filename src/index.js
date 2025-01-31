@@ -60,6 +60,16 @@ class GridController {
     this._onCellChange = func;
   }
 
+  lock() {
+    this._containerNode.classList.add('locked');
+    this._locked = true;
+  }
+
+  unlock() {
+    this._locked = false;
+    this._containerNode.classList.remove('locked');
+  }
+
   //-- private event handling --
 
   _onPlayerChange(event) {
@@ -70,16 +80,13 @@ class GridController {
   }
 
   _onClick(event) {
-    if (event.target.classList.contains('cell')) {
-      if (this._onCellClick) {
-        // TODO: incorporate coords into cellEventArgs
-        let cellEventArgs = Object.assign(
-          {},
-          this.coordsAtId(event.target.id),
-          { player: this._player },
-        );
-        this._onCellClick(event.target, cellEventArgs);
-      }
+    if (this._onCellClick && !this._locked && event.target.classList.contains('cell')) {
+      let cellEventArgs = Object.assign(
+        {},
+        this.coordsAtId(event.target.id),
+        { player: this._player },
+      );
+      this._onCellClick(event.target, cellEventArgs);
     }
   }
 
@@ -173,6 +180,8 @@ const AttackBoardController = (function() {
   let _attacker = null;
   let _board = null;
 
+  //-- Setup --
+
   const _gridController = new GridController(
     document.getElementById('opponent-board')
   );
@@ -183,16 +192,29 @@ const AttackBoardController = (function() {
 
   _gridController.setCellClickListener(function(cellNode, eventArgs) {
     if (_attacker.canAttack(eventArgs.x, eventArgs.y)) {
+      lock();
       _attacker.attack(eventArgs.x, eventArgs.y);
       // TODO: Lock the attack grid until it's the player's turn again.
     }
   });
+
+  //-- Public methods --
 
   const bindPlayer = function(player) {
     _attacker = player.opponent;
     _board = player.board;
     _gridController.bindPlayer(player);
   };
+
+  const lock = function() {
+    _gridController.lock();
+  }
+
+  const unlock = function() {
+    _gridController.unlock();
+  }
+
+  //-- Private helper methods --
 
   const _refreshCell = function(cellNode, x, y) {
     cellNode.classList.remove('hit');
@@ -208,10 +230,12 @@ const AttackBoardController = (function() {
     }
   }
 
-  return { bindPlayer };
+  return { bindPlayer, lock, unlock };
 }());
 
 const GameController = (function() {
+  const COMPUTER_DELAY = 1600;
+
   const _messageNode = document.getElementById('message');
 
   let player1 = null;
@@ -258,10 +282,9 @@ const GameController = (function() {
 
     // Start the turn.
     if (currentPlayer.isHuman()) {
-      // TODO: Unlock the attack grid so they can attack.
+      AttackBoardController.unlock();
     } else {
-      // TODO: Set a brief timer before auto-attack.
-      currentPlayer.autoAttack();
+      setTimeout(() => currentPlayer.autoAttack(), COMPUTER_DELAY);
     }
   };
 
@@ -269,7 +292,9 @@ const GameController = (function() {
 
   const _onPlayerAction = function(eventArgs) {
     if (eventArgs.action == 'attack') {
-      console.log("A player attacked."); // TODO: remove
+      let { sender, x, y } = eventArgs;
+      let verb = eventArgs.result == 'hit' ? 'hit' : 'missed';
+      setMessage(`${sender.name} ${verb} ${sender.opponent.name} at ${x},${y}`);
       startNextTurn();
     }
   };

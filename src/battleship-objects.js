@@ -321,9 +321,15 @@ class Player extends Observable {
     if (!this.canAttack(x, y)) {
       throw new Error(`Player can't attack ${x},${y}`);
     }
-    let result = this.opponent.board.receiveAttack(x, y);
-    this.notifyChanged({ action: 'attack', x, y, result });
-    return result;
+    let receiveAttackInfo = this.opponent.board.receiveAttack(x, y);
+    this.notifyChanged({
+      action: 'attack',
+      x,
+      y,
+      ship: receiveAttackInfo.hitShip,
+      result: !!receiveAttackInfo.hitShip ? 'hit' : 'miss'
+    });
+    return receiveAttackInfo;
   }
   
   autoAttack() {
