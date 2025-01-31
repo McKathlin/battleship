@@ -4,26 +4,96 @@ import Observable from './lib/observable.js';
 // Ship
 //=============================================================================
 
+const NOT_PLACED = -1;
+
 class Ship {
   constructor(length) {
     this._length = length;
     this._hitCount = 0;
+    this._isVertical = false;
+    this._x = NOT_PLACED;
+    this._y = NOT_PLACED;
   }
 
   get length() {
     return this._length;
   }
 
+  get height() {
+    return this.isVertical() ? this.length : 1;
+  }
+
   get hitCount() {
     return this._hitCount;
+  }
+
+  get orientation() {
+    return this.isVertical() ? 'vertical' : 'horizontal';
+  }
+  set orientation(str) {
+    if (this.isPlaced()) {
+      throw new Error("Cannot rotate a ship that is already placed");
+    }
+    if (str && str.toLowerCase().startsWith('v')) {
+      this._isVertical = true;
+    } else {
+      this._isVertical = false;
+    }
+  }
+
+  get width() {
+    return this.isVertical() ? 1 : this.length;
+  }
+
+  get x() {
+    return this._x;
+  }
+
+  get y() {
+    return this._y;
   }
 
   hit() {
     this._hitCount += 1;
   }
 
+  isHorizontal() {
+    return !this.isVertical();
+  }
+
+  isPlaced() {
+    return this.x >= 0;
+  }
+
   isSunk() {
     return this._hitCount >= this._length;
+  }
+
+  isVertical() {
+    return this._isVertical;
+  }
+
+  place(x, y, orientation = null) {
+    this.remove();
+    if (orientation !== null) {
+      this.orientation = orientation;
+    }
+    this._x = x;
+    this._y = y;
+  }
+
+  // Undo placement
+  remove() {
+    this._x = NOT_PLACED;
+    this._y = NOT_PLACED;
+  }
+
+  rotate() {
+    if (this.isVertical()) {
+      this.orientation = 'horizontal';
+    } else {
+      this.orientation = 'vertical';
+    }
   }
 }
 
