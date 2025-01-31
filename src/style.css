@@ -58,6 +58,18 @@ section#player .board .cell {
   background-color: #124d9b;
 }
 
+section#player .board .cell.ship {
+  background-color: #97a899;
+}
+
+section#player .board .cell.ship.hit {
+  background-color: #f5a716;
+}
+
+section#player .board .cell.miss {
+  background-color: #50b5c7;
+}
+
 /* Attacks on Opponent section */
 
 section#opponent {
@@ -78,8 +90,23 @@ section#opponent .board {
   /* Grid columns and rows are defined dynamically. */
 }
 
+section#opponent .board.locked, section#opponent .board.locked .cell {
+  cursor: wait !important;
+}
+
 section#opponent .board .cell {
   background-color: var(--section-back-color, white);
+  cursor: pointer;
+}
+
+section#opponent .board .cell.hit {
+  background-color: #c94a00;
+  cursor: default;
+}
+
+section#opponent .board .cell.miss {
+  background-color: #88acb4;
+  cursor: default;
 }
 
 /* Wide screen adjustments*/

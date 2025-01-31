@@ -1,4 +1,4 @@
-import { Ship } from '../src/battleship.js';
+import { Ship } from '../src/battleship-objects.js';
 
 test('remembers its length (3)', () => {
   const LENGTH = 3;

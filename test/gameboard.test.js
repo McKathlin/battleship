@@ -1,4 +1,4 @@
-import { GameBoard, Ship } from '../src/battleship.js';
+import { GameBoard, Ship } from '../src/battleship-objects.js';
 
 const STANDARD_WIDTH = 10;
 const STANDARD_HEIGHT = 10;

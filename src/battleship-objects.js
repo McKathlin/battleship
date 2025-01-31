@@ -184,14 +184,14 @@ class GameBoard extends Observable {
       result = 'miss';
     }
 
-    this.notifyChanged({ x, y, ship: hitShip, action: 'attack', result });
+    this.notifyChanged({ x, y, ship: hitShip, action: 'receiveAttack', result });
     return { x, y, hitShip };
   }
 
   //-- Private helper methods --
 
   _indexAt(x, y) {
-    return (y * this.height) + x;
+    return (Number.parseInt(y) * this.width) + Number.parseInt(x);
   }
 }
 
@@ -321,7 +321,23 @@ class Player extends Observable {
     if (!this.canAttack(x, y)) {
       throw new Error(`Player can't attack ${x},${y}`);
     }
-    return this.opponent.board.receiveAttack(x, y);
+    let receiveAttackInfo = this.opponent.board.receiveAttack(x, y);
+    this.notifyChanged({
+      action: 'attack',
+      x,
+      y,
+      ship: receiveAttackInfo.hitShip,
+      result: !!receiveAttackInfo.hitShip ? 'hit' : 'miss'
+    });
+    return receiveAttackInfo;
+  }
+  
+  autoAttack() {
+    if (this._attackAI) {
+      return this._attackAI.attackAs(this);
+    } else {
+      return null;
+    }
   }
 
   // private event handling

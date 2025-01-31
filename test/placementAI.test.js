@@ -1,5 +1,5 @@
 import { PredeterminedPlacementAI, RandomPlacementAI } from "../src/placementAI.js";
-import { Player } from "../src/battleship.js";
+import { Player } from "../src/battleship-objects.js";
 
 test('PredeterminedPlacementAI places all ships', () => {
   expect(placesAllShips(new PredeterminedPlacementAI())).toBe(true);
