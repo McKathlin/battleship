@@ -1,10 +1,18 @@
 import Observable from './lib/observable.js';
 
 //=============================================================================
-// Ship
+// Static Helpers
 //=============================================================================
 
 const NOT_PLACED = -1;
+
+const _resolvesToVertical = function(str) {
+  return !!str && (str.startsWith('v') || str.startsWith('V'));
+}
+
+//=============================================================================
+// Ship
+//=============================================================================
 
 class Ship {
   constructor(length) {
@@ -34,7 +42,7 @@ class Ship {
     if (this.isPlaced()) {
       throw new Error("Cannot rotate a ship that is already placed");
     }
-    if (str && str.toLowerCase().startsWith('v')) {
+    if (_resolvesToVertical(str)) {
       this._isVertical = true;
     } else {
       this._isVertical = false;
