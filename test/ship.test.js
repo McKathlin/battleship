@@ -171,4 +171,51 @@ test('cannot be rotated in place', () => {
   twitchy.place(2, 3, VERTICAL);
   expect(() => skippy.rotate()).toThrow();
   expect(() => skippy.orientation = 'horizontal').toThrow();
-})
+});
+
+test('returns correct horizontal coordinate list', () => {
+  let s = new Ship(4);
+  s.place(1, 5, 'horizontal');
+  expect(s.getPlacedCoordinates()).toEqual([
+    { x: 1, y: 5 },
+    { x: 2, y: 5 },
+    { x: 3, y: 5 },
+    { x: 4, y: 5 },
+  ]);
+});
+
+test('returns correct vertical coordinate list', () => {
+  let s = new Ship(3);
+  s.place(2, 2, 'vertical');
+  expect(s.getPlacedCoordinates()).toEqual([
+    { x: 2, y: 2 },
+    { x: 2, y: 3 },
+    { x: 2, y: 4 },
+  ]);
+});
+
+test('returns empty coordinate list for unplaced ship', () => {
+  let s = new Ship(3);
+  expect(s.getPlacedCoordinates()).toEqual([]);
+});
+
+test('builds prospective coordinate list using current orientation', () => {
+  let s = new Ship(3);
+  s.orientation = 'vertical';
+  expect(s.getPlacedCoordinatesFrom(3, 1)).toEqual([
+    { x: 3, y: 1 },
+    { x: 3, y: 2 },
+    { x: 3, y: 3 },
+  ]);
+});
+
+test('builds prospective coordinate list using specified orientation', () => {
+  let s = new Ship(3);
+  s.orientation = 'vertical';
+  expect(s.getPlacedCoordinatesFrom(3, 2, 'horz')).toEqual([
+    { x: 3, y: 2 },
+    { x: 4, y: 2 },
+    { x: 5, y: 2 },
+  ]);
+});
+

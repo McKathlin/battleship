@@ -61,6 +61,39 @@ class Ship {
     return this._y;
   }
 
+  getPlacedCoordinates() {
+    return this.getPlacedCoordinatesFrom(this.x, this.y, this.orientation);
+  }
+
+  getPlacedCoordinatesFrom(x, y, pOrientation = null) {
+    let isVertical = this.isVertical();
+    if (pOrientation !== null) {
+      isVertical = _resolvesToVertical(pOrientation);
+    }
+
+    if (x == NOT_PLACED || y == NOT_PLACED) {
+      return [];
+    }
+
+    let coordsList = [];
+    if (isVertical) {
+      for (let i = 0; i < this.length; i++) {
+        coordsList.push({
+          x: x,
+          y: y + i
+        });
+      }
+    } else {
+      for (let i = 0; i < this.length; i++) {
+        coordsList.push({
+          x: x + i,
+          y: y
+        });
+      }
+    }
+    return coordsList;
+  }
+
   hit() {
     this._hitCount += 1;
   }
