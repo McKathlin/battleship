@@ -339,6 +339,8 @@ class Player extends Observable {
     this.opponent = opponent;
   }
 
+  //-- Properties --
+
   get board() {
     return this._board;
   }
@@ -379,6 +381,8 @@ class Player extends Observable {
     return !this.isComputer();
   }
 
+  //-- Ship Placement --
+
   autoPlaceShips() {
     if (this._placementAI) {
       this._placementAI.placeAllShips(this);
@@ -390,14 +394,6 @@ class Player extends Observable {
 
   areAllShipsPlaced() {
     return this._shipSetToPlace.size == 0;
-  }
-
-  wins() {
-    return this.opponent.loses();
-  }
-
-  loses() {
-    return this.board.areAllShipsSunk();
   }
 
   canPlaceHorizontal(ship, x, y) {
@@ -419,6 +415,8 @@ class Player extends Observable {
     this._board.placeVertical(ship, x, y);
     this._markPlaced(ship);
   }
+  
+  //-- Attacks --
 
   canAttack(x, y) {
     if (!this.opponent) {
@@ -450,7 +448,15 @@ class Player extends Observable {
     }
   }
 
-  // private event handling
+  wins() {
+    return this.opponent.loses();
+  }
+
+  loses() {
+    return this.board.areAllShipsSunk();
+  }
+
+  //-- Private event handling --
 
   _onBoardChange(boardEventArgs) {
     const eventArgs = Object.assign({},
@@ -460,7 +466,7 @@ class Player extends Observable {
     this.notifyChanged(eventArgs);
   }
 
-  // private helpers
+  //-- Private helpers --
 
   _mustOwnShip(ship) {
     if (!this._shipSetToPlace.has(ship) && !this.board.ships.includes(ship)) {
