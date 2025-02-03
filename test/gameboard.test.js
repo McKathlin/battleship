@@ -3,6 +3,8 @@ import { GameBoard, Ship } from '../src/battleship-objects.js';
 const STANDARD_WIDTH = 10;
 const STANDARD_HEIGHT = 10;
 
+// Dimensions and Bounds
+
 test('remembers width and height', () => {
   let WIDTH = 8;
   let HEIGHT = 10;
@@ -38,6 +40,28 @@ test('counts too-large coordinates as out of bounds', () => {
   expect(board.isInBounds(0, HEIGHT)).toBe(false);
   expect(board.isInBounds(WIDTH + 3, HEIGHT)).toBe(false);
   expect(board.isInBounds(-4, HEIGHT + 1)).toBe(false);
+});
+
+// Ship placement
+
+test('places with the current orientation', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let s = new Ship(4);
+  s.orientation = 'horizontal';
+  expect(board.canPlace(s, 2, 0)).toBe(true);
+  board.place(s, 2, 0);
+  expect(board.hasShipAt(5, 0)).toBe(true);
+  expect(s.isPlaced()).toBe(true);
+});
+
+test('places with an entered orientation', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let s = new Ship(4);
+  s.orientation = 'horizontal';
+  expect(board.canPlace(s, 2, 0, 'vertical')).toBe(true);
+  board.place(s, 2, 0, 'vertical');
+  expect(board.hasShipAt(2, 3)).toBe(true);
+  expect(s.isPlaced()).toBe(true);
 });
 
 test('places horizontally', () => {
@@ -101,6 +125,8 @@ test('disallows ship collisions', () => {
   expect(board.canPlaceVertical(destroyer, 2, 0)).toBe(false);
   expect(() => board.placeVertical(destroyer, 2, 0)).toThrow();
 });
+
+// Attacks
 
 test('remembers attack coords', () => {
   let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);

@@ -65,11 +65,8 @@ class Ship {
     return this.getPlacedCoordinatesFrom(this.x, this.y, this.orientation);
   }
 
-  getPlacedCoordinatesFrom(x, y, pOrientation = null) {
-    let isVertical = this.isVertical();
-    if (pOrientation !== null) {
-      isVertical = _resolvesToVertical(pOrientation);
-    }
+  getPlacedCoordinatesFrom(x, y, orientation = this.orientation) {
+    let isVertical = _resolvesToVertical(orientation);
 
     if (x == NOT_PLACED || y == NOT_PLACED) {
       return [];
@@ -91,6 +88,8 @@ class Ship {
         });
       }
     }
+    console.log("Placed coordinates from", x, y);
+    console.log(coordsList);
     return coordsList;
   }
 
@@ -193,6 +192,26 @@ class GameBoard extends Observable {
     return !!this.shipAt(x, y);
   }
 
+  canPlace(ship, x0, y0, orientation = this.orientation) {
+    const coordsList = ship.getPlacedCoordinatesFrom(x0, y0, orientation);
+    for (const { x, y } of coordsList) {
+      // Check bounds.
+      if (!this.isInBounds(x, y)) {
+        console.log("Out of bounds:", x, y);
+        return false;
+      }
+
+      // Check for ships in the way.
+      let collidedShip = this.shipAt(x, y);
+      if (!!collidedShip && collidedShip !== ship) {
+        console.log("Collides with ship at", x, y);
+        return false;
+      }
+    }
+    // If we're here, the coast is clear.
+    return true;
+  }
+
   canPlaceHorizontal(ship, x, y) {
     // Check bounds on either end
     if (!this.isInBounds(x, y)) {
@@ -231,6 +250,23 @@ class GameBoard extends Observable {
 
     // All clear!
     return true;
+  }
+
+  place(ship, x0, y0, orientation) {
+    if (this._ships.includes(ship)) {
+      this.remove(ship);
+    }
+
+    if (!this.canPlace(ship, x0, y0, orientation)) {
+      throw new Error(`No room for ${orientation} length ${ship.length} ship placement at ${x},${y}`);
+    }
+
+    ship.place(x0, y0, orientation);
+    for (const { x, y } of ship.getPlacedCoordinates()) {
+      this._shipGrid[this._indexAt(x, y)] = ship;
+      this.notifyChanged({ ship, x, y, action: 'place' });
+    }
+    this._ships.push(ship);
   }
 
   placeHorizontal(ship, x, y) {
