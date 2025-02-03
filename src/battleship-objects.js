@@ -88,8 +88,6 @@ class Ship {
         });
       }
     }
-    console.log("Placed coordinates from", x, y);
-    console.log(coordsList);
     return coordsList;
   }
 
@@ -193,63 +191,40 @@ class GameBoard extends Observable {
   }
 
   canPlace(ship, x0, y0, orientation = this.orientation) {
-    const coordsList = ship.getPlacedCoordinatesFrom(x0, y0, orientation);
-    for (const { x, y } of coordsList) {
-      // Check bounds.
-      if (!this.isInBounds(x, y)) {
-        console.log("Out of bounds:", x, y);
+    // Check bounds on either end.
+    if (!this.isInBounds(x0, y0)) {
+      return false;
+    }
+
+    if (_resolvesToVertical(orientation)) {
+      if (!this.isInBounds(x0, y0 + ship.length - 1)) {
         return false;
       }
-
-      // Check for ships in the way.
-      let collidedShip = this.shipAt(x, y);
-      if (!!collidedShip && collidedShip !== ship) {
-        console.log("Collides with ship at", x, y);
+    } else {
+      if (!this.isInBounds(x0 + ship.length - 1, y0)) {
         return false;
       }
     }
+
+    // Check for ships in the way.
+    const coordsList = ship.getPlacedCoordinatesFrom(x0, y0, orientation);
+    for (const { x, y } of coordsList) {
+      let collidedShip = this.shipAt(x, y);
+      if (!!collidedShip && collidedShip !== ship) {
+        return false;
+      }
+    }
+
     // If we're here, the coast is clear.
     return true;
   }
 
   canPlaceHorizontal(ship, x, y) {
-    // Check bounds on either end
-    if (!this.isInBounds(x, y)) {
-      return false;
-    }
-    if (!this.isInBounds(x + ship.length - 1, y)) {
-      return false;
-    }
-
-    // Check availability on every cell
-    for (let i = 0; i < ship.length; i++) {
-      if (this.hasShipAt(x + i, y)) {
-        return false;
-      }
-    }
-
-    // All clear!
-    return true;
+    return this.canPlace(ship, x, y, 'horizontal');
   }
 
   canPlaceVertical(ship, x, y) {
-    // Check bounds on either end
-    if (!this.isInBounds(x, y)) {
-      return false;
-    }
-    if (!this.isInBounds(x, y + ship.length - 1)) {
-      return false;
-    }
-
-    // Check availability on every cell
-    for (let i = 0; i < ship.length; i++) {
-      if (this.hasShipAt(x, y + i)) {
-        return false;
-      }
-    }
-
-    // All clear!
-    return true;
+    return this.canPlace(ship, x, y, 'vertical');
   }
 
   place(ship, x0, y0, orientation) {
@@ -258,7 +233,7 @@ class GameBoard extends Observable {
     }
 
     if (!this.canPlace(ship, x0, y0, orientation)) {
-      throw new Error(`No room for ${orientation} length ${ship.length} ship placement at ${x},${y}`);
+      throw new Error(`No room for ${orientation} length ${ship.length} ship placement at ${x0},${y0}`);
     }
 
     ship.place(x0, y0, orientation);
@@ -270,37 +245,11 @@ class GameBoard extends Observable {
   }
 
   placeHorizontal(ship, x, y) {
-    if (!this.canPlaceHorizontal(ship, x, y)) {
-      throw new Error(`No room for horizontal placement at ${x},${y}`);
-    }
-
-    for (let i = 0; i < ship.length; i++) {
-      this._shipGrid[this._indexAt(x + i, y)] = ship;
-      this.notifyChanged({
-        x: x + i,
-        y,
-        action: 'place',
-        ship,
-      });
-    }
-    this._ships.push(ship);
+    return this.place(ship, x, y, 'horizontal');
   }
 
   placeVertical(ship, x, y) {
-    if (!this.canPlaceVertical(ship, x, y)) {
-      throw new Error(`No room for vertical placement at ${x},${y}`);
-    }
-
-    for (let i = 0; i < ship.length; i++) {
-      this._shipGrid[this._indexAt(x, y + i)] = ship;
-      this.notifyChanged({
-        x,
-        y: y + i,
-        action: 'place',
-        ship,
-      });
-    }
-    this._ships.push(ship);
+    return this.place(ship, x, y, 'vertical');
   }
 
   //-- Ship attacks --
