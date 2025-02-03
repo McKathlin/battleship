@@ -252,6 +252,20 @@ class GameBoard extends Observable {
     return this.place(ship, x, y, 'vertical');
   }
 
+  remove(ship) {
+    let shipIndex = this._ships.indexOf(ship);
+    if (shipIndex >= 0) {
+      this._ships.splice(shipIndex, 1);
+      for (const { x, y } of ship.getPlacedCoordinates()) {
+        delete this._shipGrid[this._indexAt(x, y)];
+      }
+      ship.remove();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   //-- Ship attacks --
 
   canBeAttacked(x, y) {

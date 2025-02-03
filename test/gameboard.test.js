@@ -44,6 +44,21 @@ test('counts too-large coordinates as out of bounds', () => {
 
 // Ship placement
 
+test('remembers placed ships', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let shipA = new Ship(4);
+  let shipB = new Ship(3);
+  let shipC = new Ship(2);
+  
+  board.place(shipA, 1, 1, 'vert');
+  board.place(shipB, 3, 2, 'horz');
+  board.place(shipC, 5, 5, 'vert');
+
+  expect(board.ships).toContain(shipA);
+  expect(board.ships).toContain(shipB);
+  expect(board.ships).toContain(shipC);
+})
+
 test('places with the current orientation', () => {
   let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
   let s = new Ship(4);
@@ -124,6 +139,40 @@ test('disallows ship collisions', () => {
   board.placeHorizontal(carrier, 1, 1);
   expect(board.canPlaceVertical(destroyer, 2, 0)).toBe(false);
   expect(() => board.placeVertical(destroyer, 2, 0)).toThrow();
+});
+
+test('allows removing a ship from the board', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let aShip = new Ship(3);
+
+  board.place(aShip, 1, 1, 'vertical');
+  expect(board.shipAt(1, 3)).toStrictEqual(aShip);
+
+  expect(board.remove(aShip)).toBeTruthy();
+  expect(board.shipAt(1, 3)).toBeFalsy();
+  expect(aShip.isPlaced()).toBe(false);
+  expect(board.ships).not.toContain(aShip);
+});
+
+test('signals failure on attempt to remove a not-placed ship', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let missingShip = new Ship(3);
+
+  expect(board.remove(missingShip)).toBeFalsy();
+});
+
+test('allows changing the placement of a ship', () => {
+  let board = new GameBoard(STANDARD_WIDTH, STANDARD_HEIGHT);
+  let movingShip = new Ship(4);
+
+  board.place(movingShip, 2, 0, 'vert');
+  expect(board.canPlace(movingShip, 0, 1, 'horz')).toBe(true);
+
+  board.place(movingShip, 0, 1, 'horz');
+  expect(board.shipAt(3, 1)).toStrictEqual(movingShip);
+
+  // Also make sure ship's old position is vacated
+  expect(board.shipAt(2, 0)).toBeFalsy();
 });
 
 // Attacks
