@@ -70,7 +70,7 @@ test('places ships', () => {
   expect(aPlayer.placedShips).toContain(firstShip);
   expect(aPlayer.board.shipAt(1, 1)).toStrictEqual(firstShip);
 
-  aPlayer.placeHorizontal(anotherShip, 3, 2);
+  aPlayer.place(anotherShip, 3, 2, 'horz');
   expect(aPlayer.placedShips).toHaveLength(2);
 });
 

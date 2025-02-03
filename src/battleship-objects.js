@@ -404,16 +404,18 @@ class Player extends Observable {
     return this._board.canPlaceVertical(ship, x, y);
   }
 
-  placeHorizontal(ship, x, y) {
+  place(ship, x, y, orientation) {
     this._mustOwnShip(ship);
-    this._board.placeHorizontal(ship, x, y);
+    this._board.place(ship, x, y, orientation);
     this._markPlaced(ship);
   }
 
+  placeHorizontal(ship, x, y) {
+    this.place(ship, x, y, 'horizontal');
+  }
+
   placeVertical(ship, x, y) {
-    this._mustOwnShip(ship);
-    this._board.placeVertical(ship, x, y);
-    this._markPlaced(ship);
+    this.place(ship, x, y, 'vertical');
   }
   
   //-- Attacks --
