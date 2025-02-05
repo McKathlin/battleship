@@ -70,7 +70,7 @@ test('places ships', () => {
   expect(aPlayer.placedShips).toContain(firstShip);
   expect(aPlayer.board.shipAt(1, 1)).toStrictEqual(firstShip);
 
-  aPlayer.placeHorizontal(anotherShip, 3, 2);
+  aPlayer.place(anotherShip, 3, 2, 'horz');
   expect(aPlayer.placedShips).toHaveLength(2);
 });
 
@@ -98,6 +98,26 @@ test('does not auto-place ships if no placementAI is specified', () => {
   let manualPlayer = new Player();
   expect(manualPlayer.autoPlaceShips()).toBe(false);
   expect(manualPlayer.areAllShipsPlaced()).toBe(false);
+});
+
+test('can remove ships', () => {
+  let aPlayer = new Player({ shipSpecs: [3, 2] });
+  let [shipA, shipB] = aPlayer.shipsToPlace;
+  aPlayer.place(shipA, 3, 1, 'horizontal');
+  aPlayer.place(shipB, 4, 4, 'vertical');
+  aPlayer.remove(shipA);
+  expect(aPlayer.placedShips).not.toContain(shipA);
+  expect(aPlayer.placedShips).toContain(shipB);
+});
+
+test('can remove all ships', () => {
+  let aPlayer = new Player({ shipSpecs: [3, 2, 5] });
+  let [shipA, shipB, shipC] = aPlayer.shipsToPlace;
+  aPlayer.place(shipA, 3, 1, 'horizontal');
+  aPlayer.place(shipB, 4, 4, 'vertical');
+  aPlayer.place(shipC, 1, 2, 'vertical');
+  aPlayer.removeAllShips();
+  expect(aPlayer.placedShips).toHaveLength(0);
 });
 
 // Opponents and attacks
