@@ -383,6 +383,7 @@ class Player extends Observable {
 
   autoPlaceShips() {
     if (this._placementAI) {
+      this.removeAllShips();
       this._placementAI.placeAllShips(this);
       return true;
     } else {
@@ -419,6 +420,13 @@ class Player extends Observable {
   
   remove(ship) {
     this.board.remove(ship);
+  }
+
+  removeAllShips() {
+    let ships = this.placedShips;
+    for (const ship of ships) {
+      this.remove(ship);
+    }
   }
 
   //-- Attacks --

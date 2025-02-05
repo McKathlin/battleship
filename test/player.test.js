@@ -110,6 +110,16 @@ test('can remove ships', () => {
   expect(aPlayer.placedShips).toContain(shipB);
 });
 
+test('can remove all ships', () => {
+  let aPlayer = new Player({ shipSpecs: [3, 2, 5] });
+  let [shipA, shipB, shipC] = aPlayer.shipsToPlace;
+  aPlayer.place(shipA, 3, 1, 'horizontal');
+  aPlayer.place(shipB, 4, 4, 'vertical');
+  aPlayer.place(shipC, 1, 2, 'vertical');
+  aPlayer.removeAllShips();
+  expect(aPlayer.placedShips).toHaveLength(0);
+});
+
 // Opponents and attacks
 
 test('mutually sets opponent on init', () => {
