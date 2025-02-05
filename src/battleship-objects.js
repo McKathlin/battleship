@@ -331,9 +331,7 @@ class Player extends Observable {
     this._board = new GameBoard(boardWidth, boardHeight);
     this._board.subscribe(this._onBoardChange.bind(this));
 
-    this._shipSetToPlace = new Set(
-      shipSpecs.map((length) => new Ship(length))
-    );
+    this._ownedShips = shipSpecs.map((length) => new Ship(length));
 
     this.name = name;
     this.opponent = opponent;
@@ -364,9 +362,9 @@ class Player extends Observable {
     this.notifyChanged({ property: 'opponent' });
   }
 
-  // Returns all not-yet-placed ships, longest to shortest.
+  // Returns all not-yet-placed ships.
   get shipsToPlace() {
-    return [...this._shipSetToPlace].sort((a, b) => b.length - a.length);
+    return this._ownedShips.filter((ship) => !ship.isPlaced());
   }
 
   get placedShips() {
@@ -393,7 +391,7 @@ class Player extends Observable {
   }
 
   areAllShipsPlaced() {
-    return this._shipSetToPlace.size == 0;
+    return this._board.ships.length == this._ownedShips.length;
   }
 
   canPlaceHorizontal(ship, x, y) {
@@ -405,9 +403,10 @@ class Player extends Observable {
   }
 
   place(ship, x, y, orientation) {
-    this._mustOwnShip(ship);
+    if (!this._ownedShips.includes(ship)) {
+      throw new Error("That's not this player's ship!");
+    }
     this._board.place(ship, x, y, orientation);
-    this._markPlaced(ship);
   }
 
   placeHorizontal(ship, x, y) {
@@ -418,6 +417,10 @@ class Player extends Observable {
     this.place(ship, x, y, 'vertical');
   }
   
+  remove(ship) {
+    this.board.remove(ship);
+  }
+
   //-- Attacks --
 
   canAttack(x, y) {
@@ -466,18 +469,6 @@ class Player extends Observable {
       { sender: this, property: 'board' },
     );
     this.notifyChanged(eventArgs);
-  }
-
-  //-- Private helpers --
-
-  _mustOwnShip(ship) {
-    if (!this._shipSetToPlace.has(ship) && !this.board.ships.includes(ship)) {
-      throw new Error("That's not this player's ship!");
-    }
-  }
-
-  _markPlaced(ship) {
-    this._shipSetToPlace.delete(ship);
   }
 }
 

@@ -100,6 +100,16 @@ test('does not auto-place ships if no placementAI is specified', () => {
   expect(manualPlayer.areAllShipsPlaced()).toBe(false);
 });
 
+test('can remove ships', () => {
+  let aPlayer = new Player({ shipSpecs: [3, 2] });
+  let [shipA, shipB] = aPlayer.shipsToPlace;
+  aPlayer.place(shipA, 3, 1, 'horizontal');
+  aPlayer.place(shipB, 4, 4, 'vertical');
+  aPlayer.remove(shipA);
+  expect(aPlayer.placedShips).not.toContain(shipA);
+  expect(aPlayer.placedShips).toContain(shipB);
+});
+
 // Opponents and attacks
 
 test('mutually sets opponent on init', () => {
