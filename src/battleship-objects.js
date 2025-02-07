@@ -396,6 +396,10 @@ class Player extends Observable {
     return this._board.ships.length == this._ownedShips.length;
   }
 
+  canPlace(ship, x, y, orientation) {
+    return this._board.canPlace(ship, x, y, orientation);
+  }
+
   canPlaceHorizontal(ship, x, y) {
     return this._board.canPlaceHorizontal(ship, x, y);
   }
