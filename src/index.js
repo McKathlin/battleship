@@ -380,6 +380,7 @@ const GameController = (function() {
     // Set up Randomize button.
     _placementRandomizeButton.addEventListener('click', function() {
       player1.autoPlaceShips();
+      startNextPlacementStep();
     });
 
     // Set up Done button.
