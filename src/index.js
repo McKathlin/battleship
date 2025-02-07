@@ -374,14 +374,18 @@ const GameController = (function() {
 
     // Unlock board.
     ShipBoardController.unlock();
-    pickUpNextShip();
-    setMessage("Place your ships, then click Done.");
+    startNextPlacementStep();
   };
 
-  const pickUpNextShip = function() {
-    let nextShip = player1.shipsToPlace[0];
-    ShipBoardController.holdShip(nextShip);
-    setMessage("Place your next ship.");
+  const startNextPlacementStep = function() {
+    let remainingShips = player1.shipsToPlace;
+    if (remainingShips.length == 0) {
+      setMessage("All your ships are placed. Click Done to start the attack phase.");
+    } else {
+      let nextShip = remainingShips[0];
+      ShipBoardController.holdShip(nextShip);
+      setMessage(`Your next ship is ${nextShip.length} cells long. Click to place its left end.`);
+    }
   };
 
   const canStartAttackPhase = function() {
@@ -427,8 +431,8 @@ const GameController = (function() {
 
   const _onPlayerAction = function(eventArgs) {
     if (eventArgs.action == 'place') {
-      if (!canStartAttackPhase() && !ShipBoardController.getHeldShip()) {
-        pickUpNextShip();
+      if (!ShipBoardController.getHeldShip()) {
+        startNextPlacementStep();
       }
     } else if (eventArgs.action == 'attack') {
       let { sender, x, y } = eventArgs;
@@ -444,7 +448,7 @@ const GameController = (function() {
     setMessage,
     setErrorMessage,
     startNewGame,
-    pickUpNextShip,
+    startNextPlacementStep,
     canStartAttackPhase,
     startAttackPhase,
     startNextTurn,
