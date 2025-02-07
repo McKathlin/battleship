@@ -1,7 +1,7 @@
 import "./style.css";
 
 import { Player } from "./battleship-objects.js";
-import { PredeterminedPlacementAI } from "./placementAI.js";
+import { RandomPlacementAI } from "./placementAI.js";
 import { RandomAttackAI } from "./attackAI.js";
 
 //=============================================================================
@@ -274,12 +274,26 @@ const AttackBoardController = (function() {
 const GameController = (function() {
   const COMPUTER_DELAY = 1600;
 
+  //-- DOM elements --
+
   const _messageNode = document.getElementById('message');
+
+  const _placementActionBarNode =
+    document.getElementById('placement-action-bar');
+  const _placementRandomizeButton =
+    document.getElementById('placement-randomize-button');
+  const _placementDoneButton =
+    document.getElementById('placement-done-button');
+
   const _attackSectionNode = document.getElementById('opponent');
+
+  //-- Logic variables --
 
   let player1 = null;
   let player2 = null;
   let currentPlayer = null;
+
+  //-- Public methods --
 
   const setMessage = function(text) {
     _messageNode.classList.remove('error');
@@ -294,14 +308,14 @@ const GameController = (function() {
   const startNewGame = function() {
     player1 = new Player({
       name: 'Player 1',
-      placementAI: new PredeterminedPlacementAI(),
+      placementAI: new RandomPlacementAI(),
     });
     player1.subscribe(_onPlayerAction.bind(this));
     ShipBoardController.bindPlayer(player1);
     
     player2 = new Player({
       name: 'CPU',
-      placementAI: new PredeterminedPlacementAI(),
+      placementAI: new RandomPlacementAI(),
       attackAI: new RandomAttackAI(),
       opponent: player1
     });
@@ -310,8 +324,24 @@ const GameController = (function() {
     AttackBoardController.bindPlayer(player2);
 
     AttackBoardController.lock();
-    ShipBoardController.unlock();
+    ShipBoardController.lock();
 
+    startPlacementPhase();
+  }
+
+  const startPlacementPhase = function() {
+    // Set up Randomize button.
+    _placementRandomizeButton.addEventListener('click', function() {
+      player1.autoPlaceShips();
+    });
+
+    // Set up Done button.
+    _placementDoneButton.addEventListener('click', function() {
+      startAttackPhase();
+    });
+
+    // Unlock board.
+    ShipBoardController.unlock();
     setMessage("Place your ships, then click Done.");
   }
 
@@ -321,6 +351,9 @@ const GameController = (function() {
 
   const startAttackPhase = function() {
     if (canStartAttackPhase()) {
+      ShipBoardController.lock();
+      _placementActionBarNode.classList.add('hidden');
+
       AttackBoardController.unlock();
       _attackSectionNode.classList.remove('hidden');
 
