@@ -4,6 +4,13 @@ import { Player } from "./battleship-objects.js";
 import { PredeterminedPlacementAI } from "./placementAI.js";
 import { RandomAttackAI } from "./attackAI.js";
 
+//=============================================================================
+// Grid Controller
+//-----------------------------------------------------------------------------
+// This handles interactions with and updates to a GameBoard's grid.
+// The Ship Grid Controller and the Attack Grid Controller both use this.
+//=============================================================================
+
 class GridController {
   constructor(containerNode) {
     this._containerNode = containerNode;
@@ -128,10 +135,19 @@ class GridController {
 
 } // end class GridController
 
+//=============================================================================
+// Ship Board Controller
+//-----------------------------------------------------------------------------
+// This is where the player places their own ships.
+// Once the attack phase begins, attacks on the player show here.
+//=============================================================================
+
 const ShipBoardController = (function() {
   // TODO: Implement drag and drop ship placement.
 
   let _board = null;
+
+  //-- Setup --
 
   const _gridController = new GridController(
     document.getElementById('player-board')
@@ -175,6 +191,13 @@ const ShipBoardController = (function() {
 
   return { bindPlayer };
 }());
+
+//=============================================================================
+// Attack Board Controller
+//-----------------------------------------------------------------------------
+// This is where the player calls their attacks on the opponent.
+// Hits and misses vs. the opponent are recorded here.
+//=============================================================================
 
 const AttackBoardController = (function() {
   let _attacker = null;
@@ -232,6 +255,13 @@ const AttackBoardController = (function() {
 
   return { bindPlayer, lock, unlock };
 }());
+
+//=============================================================================
+// Game Controller
+//-----------------------------------------------------------------------------
+// This module coordinates gameplay at a high level:
+// ship placement phase, turn order during the attack phase, and win checking.
+//=============================================================================
 
 const GameController = (function() {
   const COMPUTER_DELAY = 1600;
