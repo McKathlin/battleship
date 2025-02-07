@@ -163,6 +163,14 @@ const ShipBoardController = (function() {
     _gridController.bindPlayer(player);
   };
 
+  const lock = function() {
+    _gridController.lock();
+  };
+
+  const unlock = function() {
+    _gridController.unlock();
+  };
+
   const _refreshCell = function(cellNode, x, y) {
     if (_board.hasShipAt(x, y)) {
       // There's a ship here. A missed attack should not show.
@@ -189,7 +197,7 @@ const ShipBoardController = (function() {
     }
   }
 
-  return { bindPlayer };
+  return { bindPlayer, lock, unlock };
 }());
 
 //=============================================================================
@@ -231,11 +239,11 @@ const AttackBoardController = (function() {
 
   const lock = function() {
     _gridController.lock();
-  }
+  };
 
   const unlock = function() {
     _gridController.unlock();
-  }
+  };
 
   //-- Private helper methods --
 
@@ -251,7 +259,7 @@ const AttackBoardController = (function() {
         cellNode.classList.add('miss');
       }
     }
-  }
+  };
 
   return { bindPlayer, lock, unlock };
 }());
@@ -267,14 +275,21 @@ const GameController = (function() {
   const COMPUTER_DELAY = 1600;
 
   const _messageNode = document.getElementById('message');
+  const _attackSectionNode = document.getElementById('opponent');
 
   let player1 = null;
   let player2 = null;
   let currentPlayer = null;
 
   const setMessage = function(text) {
+    _messageNode.classList.remove('error');
     _messageNode.innerText = text;
   };
+
+  const setErrorMessage = function(text) {
+    _messageNode.classList.add('error');
+    _messageNode.innerText = text;
+  }
 
   const startNewGame = function() {
     player1 = new Player({
@@ -282,7 +297,7 @@ const GameController = (function() {
       placementAI: new PredeterminedPlacementAI(),
     });
     player1.subscribe(_onPlayerAction.bind(this));
-    player1.autoPlaceShips();
+    ShipBoardController.bindPlayer(player1);
     
     player2 = new Player({
       name: 'CPU',
@@ -290,14 +305,32 @@ const GameController = (function() {
       attackAI: new RandomAttackAI(),
       opponent: player1
     });
-    player2.subscribe(_onPlayerAction.bind(this));
     player2.autoPlaceShips();
-
-    ShipBoardController.bindPlayer(player1);
+    player2.subscribe(_onPlayerAction.bind(this));
     AttackBoardController.bindPlayer(player2);
-    currentPlayer = player1;
-    
-    setMessage("Make your move.");
+
+    AttackBoardController.lock();
+    ShipBoardController.unlock();
+
+    setMessage("Place your ships, then click Done.");
+  }
+
+  const canStartAttackPhase = function() {
+    return player1.areAllShipsPlaced();
+  }
+
+  const startAttackPhase = function() {
+    if (canStartAttackPhase()) {
+      AttackBoardController.unlock();
+      _attackSectionNode.classList.remove('hidden');
+
+      currentPlayer = player1;
+      setMessage("Make your move.");
+      return true;
+    } else {
+      setErrorMessage('Please place all your ships first.');
+      return false;
+    }
   }
 
   const startNextTurn = function() {
@@ -333,7 +366,10 @@ const GameController = (function() {
 
   return {
     setMessage,
+    setErrorMessage,
     startNewGame,
+    canStartAttackPhase,
+    startAttackPhase,
     startNextTurn,
   };
 }());
