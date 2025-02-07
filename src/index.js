@@ -168,8 +168,9 @@ const ShipBoardController = (function() {
     }
 
     if (_player.canPlace(_currentShip, x, y)) {
-      _player.place(_currentShip, x, y);
+      let shipToPlace = _currentShip;
       _currentShip = null;
+      _player.place(shipToPlace, x, y);
     } else {
       GameController.setErrorMessage(
         `Can't place this ship at ${x},${y}! Try somewhere else.`);
@@ -425,7 +426,7 @@ const GameController = (function() {
   //-- Private event handling --
 
   const _onPlayerAction = function(eventArgs) {
-    if (eventArgs.action = 'place') {
+    if (eventArgs.action == 'place') {
       if (!canStartAttackPhase() && !ShipBoardController.getHeldShip()) {
         pickUpNextShip();
       }
