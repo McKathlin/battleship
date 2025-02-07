@@ -51,7 +51,9 @@ class GridController {
   }
 
   coordsAtId(id) {
-    let [containerId, x, y] = id.split(',');
+    const [containerId, xStr, yStr] = id.split(',');
+    const x = Number.parseInt(xStr);
+    const y = Number.parseInt(yStr);
     return { x, y };
   }
 
@@ -145,7 +147,9 @@ class GridController {
 const ShipBoardController = (function() {
   // TODO: Implement drag and drop ship placement.
 
+  let _player = null;
   let _board = null;
+  let _currentShip = null;
 
   //-- Setup --
 
@@ -158,10 +162,35 @@ const ShipBoardController = (function() {
     _refreshCell(cellNode, eventArgs.x, eventArgs.y);
   });
 
+  _gridController.setCellClickListener(function(cellNode, { x, y }) {
+    if (!_currentShip) {
+      return;
+    }
+
+    if (_player.canPlace(_currentShip, x, y)) {
+      _player.place(_currentShip, x, y);
+      _currentShip = null;
+    } else {
+      GameController.setErrorMessage(
+        `Can't place this ship at ${x},${y}! Try somewhere else.`);
+    }
+  });
+
+  //-- Public methods --
+
   const bindPlayer = function(player) {
+    _player = player;
     _board = player.board;
     _gridController.bindPlayer(player);
   };
+
+  const holdShip = function(ship) {
+    _currentShip = ship;
+  }
+
+  const getHeldShip = function() {
+    return _currentShip;
+  }
 
   const lock = function() {
     _gridController.lock();
@@ -170,6 +199,8 @@ const ShipBoardController = (function() {
   const unlock = function() {
     _gridController.unlock();
   };
+
+  //-- Private methods --
 
   const _refreshCell = function(cellNode, x, y) {
     if (_board.hasShipAt(x, y)) {
@@ -197,7 +228,7 @@ const ShipBoardController = (function() {
     }
   }
 
-  return { bindPlayer, lock, unlock };
+  return { bindPlayer, holdShip, getHeldShip, lock, unlock };
 }());
 
 //=============================================================================
@@ -342,12 +373,19 @@ const GameController = (function() {
 
     // Unlock board.
     ShipBoardController.unlock();
+    pickUpNextShip();
     setMessage("Place your ships, then click Done.");
-  }
+  };
+
+  const pickUpNextShip = function() {
+    let nextShip = player1.shipsToPlace[0];
+    ShipBoardController.holdShip(nextShip);
+    setMessage("Place your next ship.");
+  };
 
   const canStartAttackPhase = function() {
     return player1.areAllShipsPlaced();
-  }
+  };
 
   const startAttackPhase = function() {
     if (canStartAttackPhase()) {
@@ -364,7 +402,7 @@ const GameController = (function() {
       setErrorMessage('Please place all your ships first.');
       return false;
     }
-  }
+  };
 
   const startNextTurn = function() {
     // Check for a win.
@@ -387,7 +425,11 @@ const GameController = (function() {
   //-- Private event handling --
 
   const _onPlayerAction = function(eventArgs) {
-    if (eventArgs.action == 'attack') {
+    if (eventArgs.action = 'place') {
+      if (!canStartAttackPhase() && !ShipBoardController.getHeldShip()) {
+        pickUpNextShip();
+      }
+    } else if (eventArgs.action == 'attack') {
       let { sender, x, y } = eventArgs;
       let verb = eventArgs.result == 'hit' ? 'hit' : 'missed';
       setMessage(`${sender.name} ${verb} ${sender.opponent.name} at ${x},${y}`);
@@ -401,6 +443,7 @@ const GameController = (function() {
     setMessage,
     setErrorMessage,
     startNewGame,
+    pickUpNextShip,
     canStartAttackPhase,
     startAttackPhase,
     startNextTurn,
