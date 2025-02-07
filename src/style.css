@@ -22,6 +22,10 @@ main {
   grid-template-rows: 1fr 1fr;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* Header */
 
 header {
