@@ -273,7 +273,6 @@ const AttackBoardController = (function() {
     if (_attacker.canAttack(eventArgs.x, eventArgs.y)) {
       lock();
       _attacker.attack(eventArgs.x, eventArgs.y);
-      // TODO: Lock the attack grid until it's the player's turn again.
     }
   });
 
