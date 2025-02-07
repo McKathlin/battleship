@@ -47,6 +47,10 @@ section#player {
   padding: 10px;
 }
 
+section#player #placement-action-bar {
+  padding: 0.5rem;
+}
+
 section#player .board {
   background-color: #193258;
   max-height: calc(100vh - 14rem);
