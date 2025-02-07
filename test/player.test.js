@@ -120,6 +120,47 @@ test('can remove all ships', () => {
   expect(aPlayer.placedShips).toHaveLength(0);
 });
 
+test('notifies for each coordinate pair when placing a ship', () => {
+  const X = 1;
+  const Y = 5;
+  const LENGTH = 4;
+
+  let aPlayer = new Player({ shipSpecs: [LENGTH] });
+  let notifyCount = 0;
+
+  aPlayer.subscribe((eventArgs) => {
+    if (eventArgs.action == 'place') {
+      expect(eventArgs).toHaveProperty('x');
+      expect(eventArgs.y).toBe(Y);
+      notifyCount += 1;
+    }
+  });
+  aPlayer.place(aPlayer.shipsToPlace[0], X, Y, 'horz');
+  expect(notifyCount).toBe(LENGTH);
+});
+
+test('notifies for each coordinate pair when removing a ship', () => {
+  const X = 6;
+  const Y = 2;
+  const LENGTH = 3;
+
+  let aPlayer = new Player({ shipSpecs: [LENGTH] });
+  let notifyCount = 0;
+
+  aPlayer.subscribe((eventArgs) => {
+    if (eventArgs.action == 'remove') {
+      expect(eventArgs.x).toBe(X);
+      expect(eventArgs).toHaveProperty('y');
+      notifyCount += 1;
+    }
+  });
+
+  let ship = aPlayer.shipsToPlace[0];
+  aPlayer.place(ship, X, Y, 'vert');
+  aPlayer.remove(ship);
+  expect(notifyCount).toBe(LENGTH);
+});
+
 // Opponents and attacks
 
 test('mutually sets opponent on init', () => {
@@ -196,3 +237,52 @@ test('loses if all ships sink', () => {
   expect(attacker.wins()).toBe(true);
 });
 
+test('notifies with coords and result when attacking', () => {
+  const ATTACK_X = 4;
+  const ATTACK_Y = 5;
+
+  let attacker = new Player();
+  let defender = new Player({ shipSpecs: [4], opponent: attacker });
+  let attackerNotifies = false;
+
+  let ship = defender.shipsToPlace[0];
+
+  attacker.subscribe((eventArgs) => {
+    if (eventArgs.action == 'attack') {
+      expect(eventArgs.x).toBe(ATTACK_X);
+      expect(eventArgs.y).toBe(ATTACK_Y);
+      expect(eventArgs.result).toBe('hit');
+      expect(eventArgs.ship).toStrictEqual(ship);
+      attackerNotifies = true;
+    }
+  });
+
+  defender.place(ship, ATTACK_X, ATTACK_Y, 'horz');
+  attacker.attack(ATTACK_X, ATTACK_Y);
+  expect(attackerNotifies).toBe(true);
+});
+
+test('notifies with coords and result when attacked', () => {
+  const ATTACK_X = 1;
+  const ATTACK_Y = 0;
+
+  let attacker = new Player();
+  let defender = new Player({ shipSpecs: [4], opponent: attacker });
+  let defenderNotifies = false;
+
+  let ship = defender.shipsToPlace[0];
+
+  defender.subscribe((eventArgs) => {
+    if (eventArgs.action == 'receiveAttack') {
+      expect(eventArgs.x).toBe(ATTACK_X);
+      expect(eventArgs.y).toBe(ATTACK_Y);
+      expect(eventArgs.result).toBe('hit');
+      expect(eventArgs.ship).toStrictEqual(ship);
+      defenderNotifies = true;
+    }
+  });
+
+  defender.place(ship, ATTACK_X, ATTACK_Y, 'vert');
+  attacker.attack(ATTACK_X, ATTACK_Y);
+  expect(defenderNotifies).toBe(true);
+});

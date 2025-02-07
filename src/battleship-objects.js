@@ -258,6 +258,7 @@ class GameBoard extends Observable {
       this._ships.splice(shipIndex, 1);
       for (const { x, y } of ship.getPlacedCoordinates()) {
         delete this._shipGrid[this._indexAt(x, y)];
+        this.notifyChanged({ ship, x, y, action: 'remove' });
       }
       ship.remove();
       return true;
