@@ -1,8 +1,15 @@
 import "./style.css";
 
 import { Player } from "./battleship-objects.js";
-import { PredeterminedPlacementAI } from "./placementAI.js";
+import { RandomPlacementAI } from "./placementAI.js";
 import { RandomAttackAI } from "./attackAI.js";
+
+//=============================================================================
+// Grid Controller
+//-----------------------------------------------------------------------------
+// This handles interactions with and updates to a GameBoard's grid.
+// The Ship Grid Controller and the Attack Grid Controller both use this.
+//=============================================================================
 
 class GridController {
   constructor(containerNode) {
@@ -128,10 +135,19 @@ class GridController {
 
 } // end class GridController
 
+//=============================================================================
+// Ship Board Controller
+//-----------------------------------------------------------------------------
+// This is where the player places their own ships.
+// Once the attack phase begins, attacks on the player show here.
+//=============================================================================
+
 const ShipBoardController = (function() {
   // TODO: Implement drag and drop ship placement.
 
   let _board = null;
+
+  //-- Setup --
 
   const _gridController = new GridController(
     document.getElementById('player-board')
@@ -145,6 +161,14 @@ const ShipBoardController = (function() {
   const bindPlayer = function(player) {
     _board = player.board;
     _gridController.bindPlayer(player);
+  };
+
+  const lock = function() {
+    _gridController.lock();
+  };
+
+  const unlock = function() {
+    _gridController.unlock();
   };
 
   const _refreshCell = function(cellNode, x, y) {
@@ -173,8 +197,15 @@ const ShipBoardController = (function() {
     }
   }
 
-  return { bindPlayer };
+  return { bindPlayer, lock, unlock };
 }());
+
+//=============================================================================
+// Attack Board Controller
+//-----------------------------------------------------------------------------
+// This is where the player calls their attacks on the opponent.
+// Hits and misses vs. the opponent are recorded here.
+//=============================================================================
 
 const AttackBoardController = (function() {
   let _attacker = null;
@@ -208,11 +239,11 @@ const AttackBoardController = (function() {
 
   const lock = function() {
     _gridController.lock();
-  }
+  };
 
   const unlock = function() {
     _gridController.unlock();
-  }
+  };
 
   //-- Private helper methods --
 
@@ -228,46 +259,111 @@ const AttackBoardController = (function() {
         cellNode.classList.add('miss');
       }
     }
-  }
+  };
 
   return { bindPlayer, lock, unlock };
 }());
 
+//=============================================================================
+// Game Controller
+//-----------------------------------------------------------------------------
+// This module coordinates gameplay at a high level:
+// ship placement phase, turn order during the attack phase, and win checking.
+//=============================================================================
+
 const GameController = (function() {
   const COMPUTER_DELAY = 1600;
 
+  //-- DOM elements --
+
   const _messageNode = document.getElementById('message');
+
+  const _placementActionBarNode =
+    document.getElementById('placement-action-bar');
+  const _placementRandomizeButton =
+    document.getElementById('placement-randomize-button');
+  const _placementDoneButton =
+    document.getElementById('placement-done-button');
+
+  const _attackSectionNode = document.getElementById('opponent');
+
+  //-- Logic variables --
 
   let player1 = null;
   let player2 = null;
   let currentPlayer = null;
 
+  //-- Public methods --
+
   const setMessage = function(text) {
+    _messageNode.classList.remove('error');
     _messageNode.innerText = text;
   };
+
+  const setErrorMessage = function(text) {
+    _messageNode.classList.add('error');
+    _messageNode.innerText = text;
+  }
 
   const startNewGame = function() {
     player1 = new Player({
       name: 'Player 1',
-      placementAI: new PredeterminedPlacementAI(),
+      placementAI: new RandomPlacementAI(),
     });
     player1.subscribe(_onPlayerAction.bind(this));
-    player1.autoPlaceShips();
+    ShipBoardController.bindPlayer(player1);
     
     player2 = new Player({
       name: 'CPU',
-      placementAI: new PredeterminedPlacementAI(),
+      placementAI: new RandomPlacementAI(),
       attackAI: new RandomAttackAI(),
       opponent: player1
     });
-    player2.subscribe(_onPlayerAction.bind(this));
     player2.autoPlaceShips();
-
-    ShipBoardController.bindPlayer(player1);
+    player2.subscribe(_onPlayerAction.bind(this));
     AttackBoardController.bindPlayer(player2);
-    currentPlayer = player1;
-    
-    setMessage("Make your move.");
+
+    AttackBoardController.lock();
+    ShipBoardController.lock();
+
+    startPlacementPhase();
+  }
+
+  const startPlacementPhase = function() {
+    // Set up Randomize button.
+    _placementRandomizeButton.addEventListener('click', function() {
+      player1.autoPlaceShips();
+    });
+
+    // Set up Done button.
+    _placementDoneButton.addEventListener('click', function() {
+      startAttackPhase();
+    });
+
+    // Unlock board.
+    ShipBoardController.unlock();
+    setMessage("Place your ships, then click Done.");
+  }
+
+  const canStartAttackPhase = function() {
+    return player1.areAllShipsPlaced();
+  }
+
+  const startAttackPhase = function() {
+    if (canStartAttackPhase()) {
+      ShipBoardController.lock();
+      _placementActionBarNode.classList.add('hidden');
+
+      AttackBoardController.unlock();
+      _attackSectionNode.classList.remove('hidden');
+
+      currentPlayer = player1;
+      setMessage("Make your move.");
+      return true;
+    } else {
+      setErrorMessage('Please place all your ships first.');
+      return false;
+    }
   }
 
   const startNextTurn = function() {
@@ -303,7 +399,10 @@ const GameController = (function() {
 
   return {
     setMessage,
+    setErrorMessage,
     startNewGame,
+    canStartAttackPhase,
+    startAttackPhase,
     startNextTurn,
   };
 }());

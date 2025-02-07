@@ -22,6 +22,10 @@ main {
   grid-template-rows: 1fr 1fr;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* Header */
 
 header {
@@ -41,6 +45,10 @@ header #message {
 
 section#player {
   padding: 10px;
+}
+
+section#player #placement-action-bar {
+  padding: 0.5rem;
 }
 
 section#player .board {

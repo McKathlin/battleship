@@ -11,7 +11,7 @@
     <p id="message">Loading...</p>
   </header>
   <main>
-    <section id="opponent">
+    <section id="opponent" class="hidden">
       <h2>Attacks on <span id="opponent-name">Opponent</span></h2>
       <div id="opponent-board" class="board">
         <!-- The board is populated programmatically. -->
@@ -19,6 +19,10 @@
     </section>
     <section id="player">
       <h2><span id="player-name-possessive">Your</span> Ships</h2>
+      <div id="placement-action-bar">
+        <button id="placement-randomize-button">Randomize</button>
+        <button id="placement-done-button">Done</button>
+      </div>
       <div id="player-board" class="board">
         <!-- The board is populated programmatically. -->
       </div>
