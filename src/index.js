@@ -150,6 +150,8 @@ const ShipBoardController = (function() {
   let _player = null;
   let _board = null;
   let _currentShip = null;
+  let _isVertical = false;
+  let _isLocked = false;
 
   //-- Setup --
 
@@ -168,9 +170,10 @@ const ShipBoardController = (function() {
     }
 
     if (_player.canPlace(_currentShip, x, y)) {
-      let shipToPlace = _currentShip;
+      const shipToPlace = _currentShip;
+      const orientation = _isVertical ? 'vertical' : 'horizontal';
       _currentShip = null;
-      _player.place(shipToPlace, x, y);
+      _player.place(shipToPlace, x, y, orientation);
     } else {
       GameController.setErrorMessage(
         `Can't place this ship at ${x},${y}! Try somewhere else.`);
@@ -186,6 +189,7 @@ const ShipBoardController = (function() {
   };
 
   const holdShip = function(ship) {
+    _isVertical = false;
     _currentShip = ship;
   }
 
@@ -193,11 +197,23 @@ const ShipBoardController = (function() {
     return _currentShip;
   }
 
+  const rotate = function() {
+    if (_isLocked) {
+      return;
+    }
+    _isVertical = !_isVertical;
+    const adverb = _isVertical ? 'vertically' : 'horizontally';
+    GameController.setMessage(`To place your ${_currentShip.length}-cell ship ${adverb}, ` +
+      "click where its top end will go. Use the R key to rotate.");
+  }
+
   const lock = function() {
+    _isLocked = true;
     _gridController.lock();
   };
 
   const unlock = function() {
+    _isLocked = false;
     _gridController.unlock();
   };
 
@@ -229,7 +245,7 @@ const ShipBoardController = (function() {
     }
   }
 
-  return { bindPlayer, holdShip, getHeldShip, lock, unlock };
+  return { bindPlayer, holdShip, getHeldShip, rotate, lock, unlock };
 }());
 
 //=============================================================================
@@ -372,6 +388,12 @@ const GameController = (function() {
       startAttackPhase();
     });
 
+    document.addEventListener('keypress', function(event) {
+      if (event.key == 'r') {
+        ShipBoardController.rotate();
+      }
+    })
+
     // Unlock board.
     ShipBoardController.unlock();
     startNextPlacementStep();
@@ -384,7 +406,8 @@ const GameController = (function() {
     } else {
       let nextShip = remainingShips[0];
       ShipBoardController.holdShip(nextShip);
-      setMessage(`Your next ship is ${nextShip.length} cells long. Click to place its left end.`);
+      setMessage(`Your next ship is ${nextShip.length} cells long.` +
+        "Click to place its left end. Use the R key to rotate.");
     }
   };
 
