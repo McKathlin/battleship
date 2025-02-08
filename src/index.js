@@ -169,9 +169,9 @@ const ShipBoardController = (function() {
       return;
     }
 
-    if (_player.canPlace(_currentShip, x, y)) {
+    const orientation = _isVertical ? 'vertical' : 'horizontal';
+    if (_player.canPlace(_currentShip, x, y, orientation)) {
       const shipToPlace = _currentShip;
-      const orientation = _isVertical ? 'vertical' : 'horizontal';
       _currentShip = null;
       _player.place(shipToPlace, x, y, orientation);
     } else {
