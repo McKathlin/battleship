@@ -81,20 +81,18 @@ section#player .board .cell.miss {
 /* Attacks on Opponent section */
 
 section#opponent {
-  --section-back-color: #dad1cc;
+  --grid-border-color: #8b8983;
   color: #323130;
-  background-color: var(--section-back-color, white);
+  background: #eeedec;
   padding: 10px 20px;
 }
 
 section#opponent .board {
-  background-color: #8b8983;
+  border: 2px solid var(--grid-border-color, gray);
   max-height: calc(100vh - 18rem);
   margin: auto;
-  padding: 2px;
 
   display: grid;
-  gap: 2px;
   /* Grid columns and rows are defined dynamically. */
 }
 
@@ -103,7 +101,7 @@ section#opponent .board.locked, section#opponent .board.locked .cell {
 }
 
 section#opponent .board .cell {
-  background-color: var(--section-back-color, white);
+  border: 1px solid var(--grid-border-color, gray);
   cursor: pointer;
 }
 
