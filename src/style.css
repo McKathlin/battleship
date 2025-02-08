@@ -52,18 +52,17 @@ section#player #placement-action-bar {
 }
 
 section#player .board {
-  background-color: #193258;
+  --grid-border-color: #193258;
+  background-color: #124d9b;
+  border: 3px solid var(--grid-border-color);
   max-height: calc(100vh - 14rem);
   margin: auto;
-  padding: 5px;
-
   display: grid;
-  gap: 2px;
   /* Grid columns and rows are defined dynamically. */
 }
 
 section#player .board .cell {
-  background-color: #124d9b;
+  border: 1px solid var(--grid-border-color);
 }
 
 section#player .board .cell.ship {
