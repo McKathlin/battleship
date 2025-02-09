@@ -458,9 +458,13 @@ const GameController = (function() {
         startNextPlacementStep();
       }
     } else if (eventArgs.action == 'attack') {
-      let { sender, x, y } = eventArgs;
+      let { sender, x, y, ship } = eventArgs;
       let verb = eventArgs.result == 'hit' ? 'hit' : 'missed';
-      setMessage(`${sender.name} ${verb} ${sender.opponent.name} at ${x},${y}`);
+      let message = `${sender.name} ${verb} ${sender.opponent.name} at ${x},${y}`;
+      if (ship && ship.isSunk()) {
+        message += `. ${sender.name} sank ${sender.opponent.name}'s ship!`;
+      }
+      setMessage(message);
       startNextTurn();
     }
   };
