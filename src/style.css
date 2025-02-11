@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Poster Army";
+  src: url("./font/PosterArmy.otf");
+}
+
 body {
   color: #d1e7dd;
   background-color: #214070;
@@ -32,6 +37,13 @@ header {
   display: grid;
   grid-template-columns: 25% 50% 25%;
   gap: 10px;
+}
+
+header h1 {
+  font-family: "Poster Army", Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 3rem;
+  font-weight: normal;
+  text-transform: uppercase;
 }
 
 header #message {
