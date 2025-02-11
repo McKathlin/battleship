@@ -17,10 +17,6 @@ body {
   align-items: stretch;
 }
 
-a {
-  color: #eeffbb;
-}
-
 main {
   flex: 1;
 
@@ -132,6 +128,16 @@ section#opponent .board .cell.hit {
 section#opponent .board .cell.miss {
   background-color: #88acb4;
   cursor: default;
+}
+
+/* Footer */
+
+footer a {
+  color: #ddeebb;
+}
+
+footer a:hover {
+  color: #eeffcc;
 }
 
 /* Wide screen adjustments*/
