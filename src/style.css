@@ -4,6 +4,7 @@
 }
 
 body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #d1e7dd;
   background-color: #214070;
   height: 100vh;
