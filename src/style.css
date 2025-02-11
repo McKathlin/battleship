@@ -4,7 +4,8 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --default-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--default-font, sans-serif);
   color: #d1e7dd;
   background-color: #214070;
   height: 100vh;
@@ -26,6 +27,11 @@ main {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 1fr;
+}
+
+button {
+  font-family: var(--default-font, sans-serif);
+  font-size: 1rem;
 }
 
 .hidden {
