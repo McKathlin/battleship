@@ -193,6 +193,11 @@ const ShipBoardController = (function() {
     _currentShip = ship;
   }
 
+  const releaseShip = function(ship) {
+    _isVertical = false;
+    _currentShip = ship;
+  }
+
   const getHeldShip = function() {
     return _currentShip;
   }
@@ -245,7 +250,15 @@ const ShipBoardController = (function() {
     }
   }
 
-  return { bindPlayer, holdShip, getHeldShip, rotate, lock, unlock };
+  return { 
+    bindPlayer, 
+    holdShip, 
+    getHeldShip,
+    releaseShip,
+    rotate, 
+    lock, 
+    unlock 
+  };
 }());
 
 //=============================================================================
@@ -329,6 +342,8 @@ const GameController = (function() {
     document.getElementById('placement-action-bar');
   const _placementRandomizeButton =
     document.getElementById('placement-randomize-button');
+  const _placementClearButton =
+    document.getElementById('placement-clear-button');
   const _placementDoneButton =
     document.getElementById('placement-done-button');
 
@@ -383,6 +398,12 @@ const GameController = (function() {
       startNextPlacementStep();
     });
 
+    // Set up Clear button.
+    _placementClearButton.addEventListener('click', function() {
+      player1.removeAllShips();
+      startNextPlacementStep();
+    })
+
     // Set up Done button.
     _placementDoneButton.addEventListener('click', function() {
       startAttackPhase();
@@ -402,6 +423,7 @@ const GameController = (function() {
   const startNextPlacementStep = function() {
     let remainingShips = player1.shipsToPlace;
     if (remainingShips.length == 0) {
+      ShipBoardController.releaseShip();
       setMessage("All your ships are placed. Click Done to start the attack phase.");
     } else {
       let nextShip = remainingShips[0];
@@ -453,7 +475,7 @@ const GameController = (function() {
   //-- Private event handling --
 
   const _onPlayerAction = function(eventArgs) {
-    if (eventArgs.action == 'place') {
+    if (eventArgs.action == 'place' || eventArgs.action == 'remove') {
       if (!ShipBoardController.getHeldShip()) {
         startNextPlacementStep();
       }
