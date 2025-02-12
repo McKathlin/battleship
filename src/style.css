@@ -10,7 +10,11 @@
 }
 
 body {
+  --header-height: 5rem;
+  --footer-height: 2rem;
+  --main-height: calc(100vh - var(--header-height) - var(--footer-height));
   --default-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
   font-family: var(--default-font, sans-serif);
   color: #d1e7dd;
   background-color: #214070;
@@ -43,6 +47,8 @@ button {
 /* Header */
 
 header {
+  height: var(--header-height);
+
   display: grid;
   grid-template-columns: 25% 50% 25%;
   gap: 10px;
@@ -53,6 +59,7 @@ header h1 {
   font-size: 3rem;
   font-weight: normal;
   text-transform: uppercase;
+  line-height: var(--header-height);
 }
 
 header #message {
@@ -139,6 +146,8 @@ section#opponent .board .cell.miss {
 /* Footer */
 
 footer a {
+  height: var(--footer-height);
+  line-height: var(--footer-height);
   color: #ddeebb;
 }
 
