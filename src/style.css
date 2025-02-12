@@ -177,14 +177,4 @@ footer a:hover {
   header {
     grid-template-columns: 25% 50% 25%;
   }
-
-  section#player {
-    grid-row: 1;
-    grid-column: 1;
-  }
-
-  section#opponent {
-    grid-row: 1;
-    grid-column: 2;
-  }
 }
