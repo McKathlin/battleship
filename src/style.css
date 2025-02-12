@@ -29,6 +29,7 @@ body {
 
 main {
   flex: 1;
+  max-height: var(--main-height);
 
   display: grid;
   grid-template-columns: 1fr;
@@ -50,7 +51,7 @@ header {
   height: var(--header-height);
 
   display: grid;
-  grid-template-columns: 25% 50% 25%;
+  grid-template-columns: min-content 1fr;
   gap: 10px;
 }
 
@@ -70,6 +71,17 @@ header #message {
   border-radius: 11px;
 }
 
+/* Main */
+
+main section {
+  display: flex;
+  flex-direction: column;
+}
+
+main section .board {
+  flex: 1;
+}
+
 /* Player Ships section */
 
 section#player {
@@ -84,7 +96,6 @@ section#player .board {
   --grid-border-color: #193258;
   background-color: #124d9b;
   border: 3px solid var(--grid-border-color);
-  max-height: calc(100vh - 14rem);
   margin: auto;
   display: grid;
   /* Grid columns and rows are defined dynamically. */
@@ -117,7 +128,6 @@ section#opponent {
 
 section#opponent .board {
   border: 2px solid var(--grid-border-color, gray);
-  max-height: calc(100vh - 18rem);
   margin: auto;
 
   display: grid;
@@ -157,10 +167,14 @@ footer a:hover {
 
 /* Wide screen adjustments*/
 
-@media (min-width: 600px) {
+@media (orientation: landscape) {
   main {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
+  }
+
+  header {
+    grid-template-columns: 25% 50% 25%;
   }
 
   section#player {
