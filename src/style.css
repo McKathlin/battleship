@@ -42,25 +42,27 @@ button {
 header {
   height: var(--header-height);
 
-  display: grid;
-  grid-template-columns: min-content 1fr;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   gap: 10px;
 }
 
 header h1 {
   font-family: "Poster Army", Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: 3rem;
+  margin: 10px;
+  font-size: min(5vw, calc(var(--header-height) - 20px));
   font-weight: normal;
   text-transform: uppercase;
-  line-height: var(--header-height);
 }
 
 header #message {
-  padding-top: 1rem;
+  margin: 8px;
+  padding: 5px 10px;
+  width: 36rem;
   font-family: 'Courier New', Courier, monospace;
   color: #181a1d;
   background-color: rgb(150, 177, 212);
-  border-radius: 11px;
 }
 
 /* Main */
@@ -173,9 +175,5 @@ footer a:hover {
   main {
     --board-size: min(40vw, calc(var(--main-height) - 5rem));
     flex-direction: row-reverse;
-  }
-
-  header {
-    grid-template-columns: 25% 50% 25%;
   }
 }
