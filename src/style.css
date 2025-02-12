@@ -10,10 +10,14 @@
 }
 
 body {
+  --light-blue: rgb(140, 195, 221);
+  --light-blue-emphasis: rgb(175, 226, 247);
+
   --header-height: 5rem;
   --footer-height: 2rem;
   --main-height: calc(100vh - var(--header-height) - var(--footer-height));
   --board-size: min(80vw, calc((var(--main-height) * 0.5) - 3rem));
+
   --default-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   font-family: var(--default-font, sans-serif);
@@ -26,11 +30,6 @@ body {
   flex-direction: column;
   justify-content: stretch;
   align-items: stretch;
-}
-
-button {
-  font-family: var(--default-font, sans-serif);
-  font-size: 1rem;
 }
 
 .hidden {
@@ -64,7 +63,7 @@ header #message {
   width: 36rem;
   font-family: 'Courier New', Courier, monospace;
   color: #181a1d;
-  background-color: rgb(150, 177, 212);
+  background-color: var(--light-blue, lightblue);
 }
 
 /* Main */
@@ -96,6 +95,25 @@ section#player {
 
 section#player #placement-action-bar {
   padding: 0.5rem;
+}
+
+#placement-action-bar button {
+  font-family: var(--default-font, sans-serif);
+  font-size: 1rem;
+  font-weight: bold;
+
+  margin: 3px;
+  padding: 3px 7px;
+
+  background-color: var(--light-blue, lightblue);
+  border: 2px solid var(--light-blue-emphasis);
+  border-radius: 7px;
+
+  cursor: pointer;
+}
+
+#placement-action-bar button:hover {
+  background-color: var(--light-blue-emphasis);
 }
 
 section#player .board {
