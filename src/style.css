@@ -45,13 +45,15 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  gap: 10px;
 }
 
 header h1 {
+  --title-height: calc(var(--header-height) - 20px);
+
   font-family: "Poster Army", Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   margin: 10px;
-  font-size: min(5vw, calc(var(--header-height) - 20px));
+  font-size: min(5vw, var(--title-height));
+  line-height: var(--title-height);
   font-weight: normal;
   text-transform: uppercase;
 }
