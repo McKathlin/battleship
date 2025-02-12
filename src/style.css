@@ -31,9 +31,9 @@ main {
   flex: 1;
   max-height: var(--main-height);
 
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 button {
@@ -76,10 +76,11 @@ header #message {
 main section {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
 }
 
 main section .board {
-  flex: 1;
+  width: min(80vw, calc((var(--main-height) - 5rem) * 0.5));
 }
 
 /* Player Ships section */
@@ -169,8 +170,11 @@ footer a:hover {
 
 @media (orientation: landscape) {
   main {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
+    flex-direction: row-reverse;
+  }
+
+  main section .board {
+    width: min(40vw, calc(var(--main-height) - 5rem));
   }
 
   header {
