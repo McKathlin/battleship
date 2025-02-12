@@ -81,6 +81,7 @@ main {
 main section {
   display: flex;
   flex-direction: column;
+  gap: 7px;
 }
 
 main section .board {
@@ -152,7 +153,8 @@ section#opponent {
   --grid-border-color: #8b8983;
   color: #323130;
   background: #eeedec;
-  padding: 10px 20px;
+  padding: 20px;
+  padding-top: 15px;
 }
 
 section#opponent .board {
@@ -200,5 +202,9 @@ footer a:hover {
   main {
     --board-size: min(40vw, calc(var(--main-height) - 5rem));
     flex-direction: row-reverse;
+  }
+
+  section#opponent {
+    padding-bottom: 35px;
   }
 }
