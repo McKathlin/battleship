@@ -3,8 +3,23 @@
   src: url("./font/PosterArmy.otf");
 }
 
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
+  --light-blue: rgb(140, 195, 221);
+  --light-blue-emphasis: rgb(175, 226, 247);
+
+  --header-height: 5rem;
+  --footer-height: 2rem;
+  --main-height: calc(100vh - var(--header-height) - var(--footer-height));
+  --board-size: min(80vw, calc((var(--main-height) * 0.5) - 3rem));
+
   --default-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
   font-family: var(--default-font, sans-serif);
   color: #d1e7dd;
   background-color: #214070;
@@ -17,19 +32,6 @@ body {
   align-items: stretch;
 }
 
-main {
-  flex: 1;
-
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr;
-}
-
-button {
-  font-family: var(--default-font, sans-serif);
-  font-size: 1rem;
-}
-
 .hidden {
   display: none !important;
 }
@@ -37,24 +39,53 @@ button {
 /* Header */
 
 header {
-  display: grid;
-  grid-template-columns: 25% 50% 25%;
-  gap: 10px;
+  height: var(--header-height);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 header h1 {
+  --title-height: calc(var(--header-height) - 20px);
+
   font-family: "Poster Army", Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: 3rem;
+  margin: 10px;
+  font-size: min(5vw, var(--title-height));
+  line-height: var(--title-height);
   font-weight: normal;
   text-transform: uppercase;
 }
 
 header #message {
-  padding-top: 1rem;
+  margin: 8px;
+  padding: 5px 10px;
+  width: 36rem;
   font-family: 'Courier New', Courier, monospace;
   color: #181a1d;
-  background-color: rgb(150, 177, 212);
-  border-radius: 11px;
+  background-color: var(--light-blue, lightblue);
+}
+
+/* Main */
+
+main {
+  flex: 1;
+  max-height: var(--main-height);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+main section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+main section .board {
+  width: var(--board-size);
 }
 
 /* Player Ships section */
@@ -67,11 +98,29 @@ section#player #placement-action-bar {
   padding: 0.5rem;
 }
 
+#placement-action-bar button {
+  font-family: var(--default-font, sans-serif);
+  font-size: 1rem;
+  font-weight: bold;
+
+  margin: 3px;
+  padding: 3px 7px;
+
+  background-color: var(--light-blue, lightblue);
+  border: 2px solid var(--light-blue-emphasis);
+  border-radius: 7px;
+
+  cursor: pointer;
+}
+
+#placement-action-bar button:hover {
+  background-color: var(--light-blue-emphasis);
+}
+
 section#player .board {
   --grid-border-color: #193258;
   background-color: #124d9b;
   border: 3px solid var(--grid-border-color);
-  max-height: calc(100vh - 14rem);
   margin: auto;
   display: grid;
   /* Grid columns and rows are defined dynamically. */
@@ -79,6 +128,11 @@ section#player .board {
 
 section#player .board .cell {
   border: 1px solid var(--grid-border-color);
+  cursor: pointer;
+}
+
+section#player .board.locked .cell {
+  cursor: default;
 }
 
 section#player .board .cell.ship {
@@ -99,12 +153,12 @@ section#opponent {
   --grid-border-color: #8b8983;
   color: #323130;
   background: #eeedec;
-  padding: 10px 20px;
+  padding: 20px;
+  padding-top: 15px;
 }
 
 section#opponent .board {
   border: 2px solid var(--grid-border-color, gray);
-  max-height: calc(100vh - 18rem);
   margin: auto;
 
   display: grid;
@@ -133,6 +187,8 @@ section#opponent .board .cell.miss {
 /* Footer */
 
 footer a {
+  height: var(--footer-height);
+  line-height: var(--footer-height);
   color: #ddeebb;
 }
 
@@ -142,19 +198,13 @@ footer a:hover {
 
 /* Wide screen adjustments*/
 
-@media (min-width: 600px) {
+@media (orientation: landscape) {
   main {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-  }
-
-  section#player {
-    grid-row: 1;
-    grid-column: 1;
+    --board-size: min(40vw, calc(var(--main-height) - 5rem));
+    flex-direction: row-reverse;
   }
 
   section#opponent {
-    grid-row: 1;
-    grid-column: 2;
+    padding-bottom: 35px;
   }
 }
