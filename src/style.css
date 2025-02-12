@@ -13,6 +13,7 @@ body {
   --header-height: 5rem;
   --footer-height: 2rem;
   --main-height: calc(100vh - var(--header-height) - var(--footer-height));
+  --board-size: min(80vw, calc((var(--main-height) - 5rem) * 0.5));
   --default-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   font-family: var(--default-font, sans-serif);
@@ -76,11 +77,10 @@ header #message {
 main section {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
 }
 
 main section .board {
-  width: min(80vw, calc((var(--main-height) - 5rem) * 0.5));
+  width: var(--board-size);
 }
 
 /* Player Ships section */
@@ -170,11 +170,8 @@ footer a:hover {
 
 @media (orientation: landscape) {
   main {
+    --board-size: min(40vw, calc(var(--main-height) - 5rem));
     flex-direction: row-reverse;
-  }
-
-  main section .board {
-    width: min(40vw, calc(var(--main-height) - 5rem));
   }
 
   header {
