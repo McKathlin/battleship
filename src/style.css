@@ -127,6 +127,11 @@ section#player .board {
 
 section#player .board .cell {
   border: 1px solid var(--grid-border-color);
+  cursor: pointer;
+}
+
+section#player .board.locked .cell {
+  cursor: default;
 }
 
 section#player .board .cell.ship {
