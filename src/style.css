@@ -3,6 +3,12 @@
   src: url("./font/PosterArmy.otf");
 }
 
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   --default-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-family: var(--default-font, sans-serif);
