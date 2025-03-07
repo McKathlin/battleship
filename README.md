@@ -30,3 +30,16 @@ The three buttons above the ship board have the following functions:
 * **Randomize**: Place all ships randomly.
 * **Clear**: Remove all ships and start over again.
 * **Done**: Move to the attack phase. This only works if all ships are placed.
+
+## Attacking
+
+Once the human player has placed all their ships and clicked the "Done" button,
+an empty board labeled "Attacks on Opponent" appears. This is where the human player
+calls their attacks. Each round proceeds as follows:
+
+1. The human player goes first. They click on a cell to attack it. (It must be a cell they haven't previously attacked.)
+2. An icon appears on that cell: a large sunburst for a hit, or a small circle for a miss.
+3. A few seconds later, the computer opponent attacks. Their attacks appear on the human player's ship board.
+
+Once a player has hit all cells of a particular ship, a message will announce that the ship has sunk.
+A player wins when they have sunk all their opponent's ships.
