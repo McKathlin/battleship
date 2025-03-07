@@ -120,7 +120,7 @@ class GridController {
     for (let y = 0; y < this.rowCount; y++) {
       for (let x = 0; x < this.columnCount; x++) {
         // Create a cell here.
-        let cellNode = document.createElement('div');
+        let cellNode = document.createElement('button');
         cellNode.classList.add('cell');
         cellNode.id = this.idAtCoords(x, y);
         if (this._onCellChange) {

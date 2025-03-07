@@ -127,6 +127,7 @@ section#player .board {
 }
 
 section#player .board .cell {
+  background: transparent;
   border: 1px solid var(--grid-border-color);
   cursor: pointer;
 }
@@ -170,6 +171,7 @@ section#opponent .board.locked, section#opponent .board.locked .cell {
 }
 
 section#opponent .board .cell {
+  background: transparent;
   border: 1px solid var(--grid-border-color, gray);
   cursor: pointer;
 }
