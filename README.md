@@ -26,7 +26,7 @@ Ship placement starts in horizontal mode, but the orientation can be toggled to 
 by using the `R` key. In horizontal mode, the cell clicked on the ship board becomes the
 ship's farthest left cell. In vertical mode, the clicked cell becomes the ship's top cell.
 
-The three buttons appear above the ship board have the following functions:
+The three buttons above the ship board have the following functions:
 * **Randomize**: Place all ships randomly.
 * **Clear**: Remove all ships and start over again.
 * **Done**: Move to the attack phase. This only works if all ships are placed.
