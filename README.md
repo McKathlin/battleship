@@ -35,9 +35,10 @@ The three buttons above the ship board have the following functions:
 
 Once the human player has placed all their ships and clicked the "Done" button,
 an empty board labeled "Attacks on Opponent" appears. This is where the human player
-calls their attacks. Each round proceeds as follows:
+calls their attacks. The players take turns, with the human player going first.
+Each round proceeds as follows:
 
-1. The human player goes first. They click on a cell to attack it. (It must be a cell they haven't previously attacked.)
+1. They click on a cell to attack it. (It must be a cell they haven't previously attacked.)
 2. An icon appears on that cell: a large sunburst for a hit, or a small circle for a miss.
 3. A few seconds later, the computer opponent attacks. Their attacks appear on the human player's ship board.
 
